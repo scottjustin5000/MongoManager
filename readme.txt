@@ -1,0 +1,1 @@
+A web app that will, perhaps, allow for easier management of your mongo objects.

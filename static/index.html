@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Mongo Management Studio</title>
+
+<link type="text/css" href="/styles/mainStyle.css" rel="stylesheet"></link>
+         <script src="/script/resources/jquery-1.8.1.min.js"></script>
+        <script src="/script/resources/knockout-2.2.0.debug.js"></script>
+        <script src="/script/resources/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+       <script src="/script/resources/splitter.js"></script>
+         <script src="/script/resources/jquery.jstree.js"></script>
+        <script src="/script/app/mediator.js"></script>
+        <script src="/script/resources/sammy.min.js"></script>
+        <script src="/script/resources/require.js"></script>
+          <script src="/script/app/config.route.js"></script>
+        <script src="/script/app/vm.queryEditor.js"></script>
+        <script src="/script/app/vm.serverExplorer.js"></script>
+         <script src="/script/app/bootstrapper.js"></script>
+        <script src="/script/app/binder.js"></script>
+        <script src="/script/app/main.js"></script>
+
+        <script type="text/javascript">
+
+</script>
+    </head>
+    <body>
+        <div id="overlay" style="display: none"></div>
+        <div id="header">
+            <% include partials/controlPanel.html%>
+        </div>
+
+         	<div role="main" id="splitterContainer">
+			    <% include partials/serverExplorer.html%>
+
+                <% include partials/queryEditor.html%>
+	      </div>
+      
+     <% include partials/documentEditor.html%>
+    </body>
+</html>

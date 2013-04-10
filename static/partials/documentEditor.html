@@ -1,0 +1,17 @@
+<div id="documentEditor" data-bind="visible:visible" style="display: none">
+   <div id="docEditorToolbar">
+       <input class="dataFormat" type="radio" name="dataFormat" value="json" checked >view as json</input>
+       <input class="dataFormat" type="radio" name="dataFormat" value="form">view as form</input>
+          <button class="docButton" id="saveDoc"><img src="/images/save.png" alt="save document" /> </button> 
+          <button class="docButton" id="deleteDoc"><img src="/images/cancel.png" alt="delete doc"/></button>
+   </div>
+    <div id="formView">
+     <div data-bind="foreach:pr()" style="text-align: center">
+           <p> <label><span data-bind="text:key"></span>:</label><input data-bind="value:value"></input> </p> 
+       </div>
+    </div>
+    <div id="jsonView" style="display: none">
+    <textarea  style="width: 100%; height: 100%; min-height:700px" data-bind="value:jsonValue"></textarea>
+    </div>
+  
+</div>

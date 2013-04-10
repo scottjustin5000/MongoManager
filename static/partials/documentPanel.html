@@ -1,0 +1,27 @@
+<div id="documentPanel" style="display: none">
+	<section class="dox-results">
+        <div unselectable="on" class="unselectable">
+                 Collection: <b><span data-bind="text:currentCollection"></span></b>
+        Hover for Preview | Click to Edit | Right Click to "stick" preview.
+        </div>
+     
+            <div data-bind="foreach: documentResults">						
+                <div class="rpThumbnail">
+
+                         <ul>
+                            <!--need to bind id-->
+                                 <li >
+                                	 <a href="#" data-bind="click:$root.documentSelected, event: {contextmenu:$root.stickPreview, mouseover: $root.toggleOver, mouseout: $root.toggleOut }">
+                                     <img alt="mongo image" width="133px" height="150px" src="/images/mongoico.png" />
+                                     </a>
+                                 </li>
+                         
+                             
+                              </ul>
+                   
+						</div>
+                 <div data-bind="attr:{id:divid}" style="width: 5px; height: 5px; float: left"></div>
+                    </div>	
+					
+				</section>
+</div>

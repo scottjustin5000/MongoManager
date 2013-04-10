@@ -1,0 +1,28 @@
+	<div id="leftPane">
+    <div id="serverControls" style="background: #bac8dc">
+           Connect <button id="serverConnection"><img src="/images/connect.png" alt="connect to server" /></button>
+    </div>
+		<div id="serverTree" style="background-color: #c4dcfb"></div>
+	<div id="signinoverlay"  style="display: none" data-bind="visible:displayOverlay">
+     <div class="modalcontainer"> 
+              <div style="padding-top: 15px">
+                   <label class="formlabel"> &nbsp;&nbsp;Server:</label>
+                       <input data-bind="value:server" maxlength="75" class="required"/>
+               </div>
+                 <div>
+                 
+                      <label class="formlabel" style="margin-left: 20px"> &nbsp;&nbsp;User:</label>
+                        <input data-bind="value:user" style="width: 230px;" /> <br/>
+                      <label class="formlabel" style="margin-left: 20px"> &nbsp;&nbsp;Password:</label>
+                        <input type="password" data-bind="value:pw" style="width: 230px;" /> 
+                     <div style="border-left: 100px; padding-left: 100px">
+                          <input style="display:inline; width: 45px" data-bind="checked: persist" type="checkbox">Save Connection</input><br />
+                          <button id="connect" type='button' style="width: 100px; height: 30px" >Go &raquo;</button>
+               
+                         <button data-bind="click:close" style="width: 100px; height: 30px" >Cancel</button>
+                     </div>
+                     <p></p>
+                  </div>
+     </div>
+    </div>
+</div>
