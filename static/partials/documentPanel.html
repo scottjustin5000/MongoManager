@@ -7,20 +7,23 @@
      
             <div data-bind="foreach: documentResults">						
                 <div class="rpThumbnail">
-
+            
+              <span  data-bind="text:id"></span>
                          <ul>
-                            <!--need to bind id-->
-                                 <li >
+                          
+                                 <li>
+                                        
                                 	 <a href="#" data-bind="click:$root.documentSelected, event: {contextmenu:$root.stickPreview, mouseover: $root.toggleOver, mouseout: $root.toggleOut }">
-                                     <img alt="mongo image" width="133px" height="150px" src="/images/mongoico.png" />
+                                     <img alt="mongo image" width="133px" height="140px" src="/images/mongoico.png" />
                                      </a>
+                                    
                                  </li>
                          
                              
                               </ul>
                    
 						</div>
-                 <div data-bind="attr:{id:divid}" style="width: 5px; height: 5px; float: left"></div>
+                 <div  style="width: 5px; height: 5px; float: left"></div>
                     </div>	
 					
 				</section>

@@ -13,6 +13,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     documentResults = ko.observableArray([]),
     db = ko.observable(''),
     currentSelect,
+    currentId = ko.observable(),
     dragging = false,
     currentCollection = ko.observable(''),
     displayDocumentResult = ko.observable(true),
@@ -101,6 +102,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             $('#docoverlay').hide();
             currentSelect = null;
         }
+        currentId(data.properties._id);
         jsonPreview(JSON.stringify(data.properties, null, 4));
         var mouseX = evt.pageX;
         var mouseY = evt.pageY - 200;
@@ -189,12 +191,12 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
 
                currentCollection(r.collection);
                for (var j = 0; j < data.length; j++) {
-                   var properties = [];
+                  /* var properties = [];
                    for (var prop in data[j]) {
                        properties.push({ "key": prop, "value": data[j][prop] });
-                   };
+                   };*/
 
-                   dr = { "properties": data[j], "divid": Math.random() };
+                   dr = { "id": data[j]._id, "properties": data[j]};
                    documentResults.push(dr);
                }
                $("#documentPanel").show();
@@ -266,6 +268,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
      return {
          visible: visible,
          db: db,
+         currentId:currentId,
          documentSelected: documentSelected,
          currentCollection: currentCollection,
          queryContent: queryContent,

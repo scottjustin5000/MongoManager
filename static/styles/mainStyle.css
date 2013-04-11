@@ -280,13 +280,21 @@ margin-bottom: 1em;
 position: relative;
 overflow: hidden;
 }
-
+.rpThumbnail label{
+     top:  8px;
+     left: 0px;
+     font-size: 12px;
+      width: 125px;
+     overflow:hidden; 
+     text-overflow:ellipsis; 
+    white-space:nowrap; 
+ }
 .rpThumbnail img {
 max-width: 135px;
 padding: 2px;
 display: block;
 position: absolute;
-top: 0px;
+top: 22px;
 left: 0px;
 height: auto;
 z-index: 9;
