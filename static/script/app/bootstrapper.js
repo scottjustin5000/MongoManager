@@ -1,15 +1,16 @@
 define('bootstrapper',
-    ['jquery', 'ko', 'binder', 'pubsub', 'router', 'vm.serverExplorer', 'vm.queryEditor', 'collectionCache'],
-    function ($, ko, binder, pubsub, router, server, qe, cc) {
+    ['binder', 'pubsub', 'router', 'vm.serverExplorer', 'vm.queryEditor', 'vm.navigation', 'collectionCache'],
+    function (binder, pubsub, router, server, qe, navigation, cc) {
         var 
             run = function () {
                 binder.bind();
-                //probably should just have a data primer
                 pubsub.initialize();
+                //  primer.prime();
                 server.load();
                 router.configure();
                 qe.load();
                 cc.init();
+                navigation.load();
                 // de.load();
 
             };

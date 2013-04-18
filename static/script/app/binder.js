@@ -7,6 +7,7 @@ define('binder',
                 ko.applyBindings(vm.explorer, this.getView(views.viewIds.explorer));
                 ko.applyBindings(vm.queryEditor, this.getView(views.viewIds.queryEditor));
                 ko.applyBindings(vm.documentEditor, this.getView(views.viewIds.documentEditor));
+         
             },
             getView: function (viewName) {
                 return $(viewName).get(0);

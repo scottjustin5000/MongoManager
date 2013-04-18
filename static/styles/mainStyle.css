@@ -117,7 +117,59 @@ overflow:auto;
   border-radius: 6px;
 
  }
-  .docPreviewcontainer {
+
+ /*doc detail hover from tree*/
+ #colStatsOverlay{
+   position:absolute;    
+  -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+   z-index: 10001;
+ }
+ #statPreviewTextArea{
+      display: block;
+    margin-left: auto;
+    margin-right: auto;
+     width: 90%; 
+     height: 100%; 
+     min-height:400px;
+     -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px; 
+ }
+   .colPreviewContainer {
+  font-family: Populaire, arial; 
+  font-size: 22px;
+  position:absolute; 
+  margin-left: 25%;
+  top:10%;
+  width: 400px;
+  background: rgba(255, 255, 255, 1);
+  color: rgba(0, 0, 0, 1);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+  -webkit-box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  text-align: left;
+  z-index: 10001;
+ 
+}
+ 
+ /*doc preview hover*/
+#docoverlay{
+   position:absolute;    
+  -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+   z-index: 10001;
+ }
+   .docPreviewcontainer {
   /*margin: 20px auto 50px;*/
   font-family: Populaire, arial; 
   font-size: 22px;
@@ -141,13 +193,6 @@ overflow:auto;
   z-index: 10001;
  
 }
-#docoverlay{
-   position:absolute;    
-  -webkit-border-radius: 9px;
-  -moz-border-radius: 9px;
-  border-radius: 9px;
-   z-index: 10001;
- }
  #docPreviewTextArea{
       display: block;
     margin-left: auto;
@@ -237,15 +282,28 @@ display:inline;
 padding-left: 1px;
 padding-right: 1px;
 font-size:24px;
+color:#373737;
 }
 .mainNavigation li a {
 color:#373737;
+ text-decoration: none;
 }
-
+ .mainNavigation li:hover{
+    color:#949494; 
+   cursor:hand;
+   cursor: pointer; 
+ }
+ /*
 .mainNavigation li a:hover {
 color:#949494;
 }
- 
+ .mainNavigation li a:focus{
+color:#949494;
+}*/
+.selectedNav{
+   color:#949494;
+   text-decoration: underline;
+ }
  /* 
   Query Panel Control Panel    
  */

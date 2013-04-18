@@ -4,14 +4,13 @@ function (sammy, vm, pubsub, message) {
 
         configure = function () {
             sammy.run();
-            pubsub.mediator.Subscribe(message.navigation.selectionChanged, updateApplicationState);
+           // pubsub.mediator.Subscribe(message.navigation.selectionChanged, updateApplicationState);
         },
 
         index = function (obj, i) {
             return obj[i];
         },
         hideAllButCurrent = function (cv, params) {
-            //console.log(params);
             if (cv != "") {
                 for (var p in vm) {
 
@@ -31,7 +30,7 @@ function (sammy, vm, pubsub, message) {
                 params == null ? c.show() : c.show(params);
             }
         },
-        updateApplicationState = function (vmName, params) {
+        /*updateApplicationState = function (vmName, params) {
             if (params) {
                 sammy.setLocation('#/' + vmName + '/' + params);
 
@@ -39,7 +38,7 @@ function (sammy, vm, pubsub, message) {
             else {
                 sammy.setLocation('#/' + vmName);
             }
-        },
+        },*/
 
     sammy = $.sammy(function () {
 
@@ -69,8 +68,9 @@ function (sammy, vm, pubsub, message) {
     });
 
     return {
-        configure: configure,
-        updateApplicationState: updateApplicationState
+        configure: configure
+        /*,
+        updateApplicationState: updateApplicationState*/
 
     };
 

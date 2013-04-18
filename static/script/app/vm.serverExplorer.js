@@ -11,6 +11,9 @@ function ($, ko, route, message, dtx, pubsub) {
                 displayOverlay(true);
 
             });
+            $('#closeColStats').bind('click', function (e) {
+                $('#colStatsOverlay').hide();
+            });
         }
         if (!loaded && invalidated) {
             $("#connect").bind('click', connect);
@@ -23,8 +26,8 @@ function ($, ko, route, message, dtx, pubsub) {
                            "method": "POST",
                            "url": "api/expandNavigation",
                            "data": function (n) {
-                               console.log(n);
-           
+                               //console.log(n);
+
                                if (n.attr("type") === "server") {
                                    return { id: n.attr ? n.attr("id") : 0, type: n.attr("type") };
                                }
@@ -37,7 +40,6 @@ function ($, ko, route, message, dtx, pubsub) {
                                    case "index":
                                    case "property":
                                        var arr = n.attr("collection").split('.');
-                                       console.log({ db: arr[0], collection: arr[1], server: n.attr("server"), type: n.attr("type") })
                                        return { db: arr[0], collection: arr[1], server: n.attr("server"), type: n.attr("type") };
                                }
                                //else need to gret db
@@ -56,7 +58,24 @@ function ($, ko, route, message, dtx, pubsub) {
                            pubsub.mediator.Publish(message.serverTree.databaseChanged, data.rslt.obj.attr("id"));
                            break;
                        case "collection":
-                           alert('collection ' + data.rslt.obj.attr("id"));
+           
+                           var info = data.rslt.obj.attr("id");
+                           var infArray = info.split('.');
+                           currentCollection(infArray[1]);
+                           var data = { server: data.rslt.obj.attr("server"), db: infArray[0], collection: infArray[1] };
+                           dtx.postJson(route.queries.collectionStats, data,
+                               function (r) {
+                                   var text = JSON.stringify(r.data, null, 4);
+                                   statPreview(text);
+                                  // var mouseX = e.pageX;
+                                   //var mouseY = e.pageY;
+                                  //  console.log(e.pageX);
+                                  //fix this
+                                   $('#colStatsOverlay').css({ 'top': 200, 'left': 200 });
+                                   $("#colStatsOverlay").show();
+
+                               });
+                           // alert('collection ' + data.rslt.obj.attr("id"));
                            break;
 
                    }
@@ -111,14 +130,16 @@ function ($, ko, route, message, dtx, pubsub) {
     displayOverlay = ko.observable(false);
     persist = ko.observable(true);
     server = ko.observable('');
-    //db = ko.observable('');
     user = ko.observable('');
     pw = ko.observable('');
+    currentCollection = ko.observable('');
+    statPreview = ko.observable('');
     return {
         displayOverlay: displayOverlay,
         persist: persist,
         server: server,
-        // db: db,
+        currentCollection: currentCollection,
+        statPreview: statPreview,
         user: user,
         pw: pw,
         close: close,

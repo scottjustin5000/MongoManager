@@ -8,7 +8,9 @@ function () {
         },
         queries:{
           documentQuery:"api/documentQuery",
-           replaceDocument:"api/replaceDocument" 
+          replaceDocument:"api/replaceDocument",
+          managementQuery:"api/managementQuery",
+          collectionStats:"api//collectionStats"
         },
         viewModels: {
             

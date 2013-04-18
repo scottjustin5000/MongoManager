@@ -9,10 +9,8 @@ var mongoIndex = require("../models/mongoIndex.js")
 function databaseController(){
     
 }
-//var _db;
 databaseController.prototype = {
-    //we'll of course need to get server info from 
-    //request body
+ 
     getDbCollections: function (req, res) {
         var serverName = req.body.server;
         var dbName = req.body.db;
@@ -35,7 +33,7 @@ databaseController.prototype = {
                   
                 var m = new mongoTreeFormatter();
                 var f = m.formatCollectionsResponse(collections, serverName);
-                   
+ 
                 res.send(f);
 
       
@@ -45,7 +43,8 @@ databaseController.prototype = {
                 
             }); 
 
-    },
+    }
+    /*,
     getIndexInfo: function(collection){
         
         try{
@@ -73,7 +72,7 @@ databaseController.prototype = {
          
 
            
-    }
+    }*/
   
 };
 module.exports = databaseController;

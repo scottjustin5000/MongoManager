@@ -8,8 +8,8 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     queryContent = ko.observable(''),
     servers = ko.observableArray(['Select']),
     selectedServer = ko.observable(''),
-    queryMode = ko.observableArray(['Collections', 'Diagnostics']),
-    selectedModeType = ko.observable('Collections'),
+   // queryMode = ko.observableArray(['Collections', 'Management', ]),
+   // selectedModeType = ko.observable('Collections'),
     documentResults = ko.observableArray([]),
     db = ko.observable(''),
     currentSelect,
@@ -143,7 +143,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
         var con = $("#tabscontent").find("div:visible");
 
         var at = $(".tabActiveHeader");
-        console.log(at);
+
         $(at[0]).removeClass('tabActiveHeader');
         var index = $(at[0].id).selector.split("_")[1];
 
@@ -173,17 +173,20 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
    },
     executeQuery = function () {
         if (selectedServer().length > 1 && db().length > 1) {
-            documentResults.removeAll();
+            
             var con = $("#tabscontent").find("div:visible");
             var index = con[0].id.split("_")[1];
-            var qt = selectedModeType();
+            //var qt = selectedModeType();
             var editor = ace.edit("code_" + index);
             var query = editor.getValue();
-
             var server = selectedServer();
-            console.log(server);
+          
             var datab = db();
             var query = { 'serverName': server, 'db': datab, 'queryText': query };
+
+            documentResults.removeAll();
+          //  if(selectedModeType()==="Collections"){
+          
             dtx.postJson(route.queries.documentQuery, { query: query },
            function (r) {
 
@@ -191,17 +194,13 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
 
                currentCollection(r.collection);
                for (var j = 0; j < data.length; j++) {
-                  /* var properties = [];
-                   for (var prop in data[j]) {
-                       properties.push({ "key": prop, "value": data[j][prop] });
-                   };*/
-
-                   dr = { "id": data[j]._id, "properties": data[j]};
+                   dr = { "id": data[j]._id, "properties": data[j], "editable":true};
                    documentResults.push(dr);
                }
                $("#documentPanel").show();
                pubsub.mediator.Publish(message.data.cacheCollection, data);
            });
+            //}
         }
         else {
             alert("server and db required");
@@ -226,8 +225,6 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
         var qt = selectedModeType();
         var items = [];
         ko.utils.arrayForEach(documentResults(), function (item) {
-
-            console.log(item);
             items.push(item);
         });
 
@@ -272,8 +269,8 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
          documentSelected: documentSelected,
          currentCollection: currentCollection,
          queryContent: queryContent,
-         queryMode: queryMode,
-         selectedModeType: selectedModeType,
+        // queryMode: queryMode,
+        // selectedModeType: selectedModeType,
          servers: servers,
          toggleOver: toggleOver,
          toggleOut: toggleOut,

@@ -16,6 +16,9 @@ module.exports = function () {
     parseCountQuery = function (query) {
 
     },
+    parseManagementQuery = function(query){
+        
+    },
     parseFindQuery = function (query) {
 
         var collection = query.substring(0, query.indexOf('.find')).replace('db.', '');

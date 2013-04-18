@@ -16,6 +16,10 @@ app.post('/newServer', function (req, res) {
     var servers = new serverController();
     servers.addServer(req, res);
 });
+app.post('/collectionStats', function (req, res) {
+    var cnt = new collectionController();
+    cnt.getCollectionStats(req, res);
+});
 app.post('/expandNavigation', function (req, res) {
     var requestType = req.body.type;
     switch (requestType) {
@@ -40,6 +44,10 @@ app.post('/expandNavigation', function (req, res) {
 app.post('/documentQuery', function (req, res) {
     var q = new query();
     q.executeSelect(req, res);
+});
+app.post('/managementQuery', function (req, res) {
+    var q = new query();
+    q.executeManagementSelect(req, res);
 });
 app.post('/replaceDocument', function (req, res) {
        var q = new query();

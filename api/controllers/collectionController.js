@@ -11,7 +11,7 @@ function collectionController(){
 collectionController.prototype = {
     getCollectionInfo: function (req, res) {
         var serverName = req.body.server;
-        var dbName =req.body.db;
+        var dbName = req.body.db;
         var collection = req.body.collection;
         var props = [];
         mongoClient.connect("mongodb://" + serverName + "/" + dbName, function (err, db) {
@@ -24,13 +24,33 @@ collectionController.prototype = {
                 }
                 var m = new mongoTreeFormatter();
                 var results = m.formatPropertyResponse(props);
+
                 res.send(results);
+
+            });
+
+        });
+    },
+    getCollectionStats: function (req, res) {
+        var serverName = req.body.server;
+        var dbName = req.body.db;
+        var collection = req.body.collection;
+        var props = [];
+        mongoClient.connect("mongodb://" + serverName + "/" + dbName, function (err, db) {
+
+            db.command({ collStats: collection }, function (err, dx) {
+                if (!err) {
+                    console.log(dx);
+                    var results = "{ \"data\" :" + JSON.stringify(dx) + ",\"status\":\"success\"}";
+                    res.send(results);
+                }
+
             });
 
         });
     },
     getCollectionIndexInfo: function (req, res) {
-        var serverName =req.body.server;
+        var serverName = req.body.server;
         var dbName = req.body.db;
         var collection = req.body.collection;
         var indexes = [];
