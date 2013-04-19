@@ -26,7 +26,6 @@ function ($, ko, route, message, dtx, pubsub) {
                            "method": "POST",
                            "url": "api/expandNavigation",
                            "data": function (n) {
-                               //console.log(n);
 
                                if (n.attr("type") === "server") {
                                    return { id: n.attr ? n.attr("id") : 0, type: n.attr("type") };
@@ -42,14 +41,14 @@ function ($, ko, route, message, dtx, pubsub) {
                                        var arr = n.attr("collection").split('.');
                                        return { db: arr[0], collection: arr[1], server: n.attr("server"), type: n.attr("type") };
                                }
-                               //else need to gret db
+                               
 
                            }
                        }
                    },
                    "plugins": ["themes", "json_data", "crrm", "ui"]
                }).bind("select_node.jstree", function (e, data) {
-
+                  
                    switch (data.rslt.obj.attr("type")) {
                        case "server":
                            pubsub.mediator.Publish(message.serverTree.serverChanged, data.rslt.obj.attr("id"));
@@ -58,24 +57,24 @@ function ($, ko, route, message, dtx, pubsub) {
                            pubsub.mediator.Publish(message.serverTree.databaseChanged, data.rslt.obj.attr("id"));
                            break;
                        case "collection":
-           
+
                            var info = data.rslt.obj.attr("id");
                            var infArray = info.split('.');
                            currentCollection(infArray[1]);
-                           var data = { server: data.rslt.obj.attr("server"), db: infArray[0], collection: infArray[1] };
-                           dtx.postJson(route.queries.collectionStats, data,
+
+                           var reqData = { server: data.rslt.obj.attr("server"), db: infArray[0], collection: infArray[1] }; 
+                           var mouseX = data.rslt.e.pageX;
+                           var mouseY = data.rslt.e.pageY;
+                           dtx.postJson(route.queries.collectionStats,reqData,
                                function (r) {
                                    var text = JSON.stringify(r.data, null, 4);
                                    statPreview(text);
-                                  // var mouseX = e.pageX;
-                                   //var mouseY = e.pageY;
-                                  //  console.log(e.pageX);
-                                  //fix this
-                                   $('#colStatsOverlay').css({ 'top': 200, 'left': 200 });
+                                  
+                               
+                                   $('#colStatsOverlay').css({ 'top': mouseY, 'left': mouseX+35 });
                                    $("#colStatsOverlay").show();
 
                                });
-                           // alert('collection ' + data.rslt.obj.attr("id"));
                            break;
 
                    }
