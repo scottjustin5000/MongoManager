@@ -4,7 +4,10 @@ define('config.views',[],
             viewIds: {
                 explorer: '#leftPane',
                 queryEditor: '#queryEditor',
-                documentEditor: '#documentEditor'
+                documentEditor: '#documentEditor',
+                adminEditor: '#adminEditor',
+                replicationEditor:'#replicationEditor',
+                profileEditor: '#profileEditor'
               
             }
         };

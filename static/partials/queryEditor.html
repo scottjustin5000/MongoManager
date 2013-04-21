@@ -1,4 +1,4 @@
-<div id="rightPane" data-bind="visible: visible" style="display: none">
+<div id="queryEditor" data-bind="visible: visible" style="display: none">
 	<div class="editorControls" style="background: #bac8dc">
       <span class="labelText">Server:</span> <select data-bind="options:servers, value:selectedServer"></select>
      <button class="queryButton" id="newQuery"><img src="/images/query.png" alt="new query"/></button>
@@ -27,16 +27,9 @@
     </div>
 			</div>
 			<div id="rightBottomPane">
-				<!--<h3>Results</h3> we'll bind tab name here to make clear wha results are showing-->
-                <!--we'll also add an option to pop out results and to go to document manager-->
-                <div id="documentResult" style="display: none" data-bind="visible: displayDocumentResult">
+                <div id="documentResult">
                   <% include documentPanel.html%>
-                </div>
-                <div id="diagnosticResult" style="display: none">
-                 <textarea style="width: 100%; height: 100%">
-                </textarea>
-                </div>
-               
+                </div>         
 			</div>
 		</div>
    <div id="docoverlay" style="display: none">

@@ -4,7 +4,7 @@ function (sammy, vm, pubsub, message) {
 
         configure = function () {
             sammy.run();
-           // pubsub.mediator.Subscribe(message.navigation.selectionChanged, updateApplicationState);
+            pubsub.mediator.Subscribe(message.navigation.selectionChanged, updateApplicationState);
         },
 
         index = function (obj, i) {
@@ -30,7 +30,7 @@ function (sammy, vm, pubsub, message) {
                 params == null ? c.show() : c.show(params);
             }
         },
-        /*updateApplicationState = function (vmName, params) {
+        updateApplicationState = function (vmName, params) {
             if (params) {
                 sammy.setLocation('#/' + vmName + '/' + params);
 
@@ -38,28 +38,28 @@ function (sammy, vm, pubsub, message) {
             else {
                 sammy.setLocation('#/' + vmName);
             }
-        },*/
+        },
 
     sammy = $.sammy(function () {
 
         /* this.get('#/', function () {
         // hideAllButCurrent('queryEditor');
         });*/
-        this.get('#/serverManager', function () {
-            // hideAllButCurrent();
+        this.get('#/admin', function () {
+            hideAllButCurrent('admin');
         });
         this.get('#/documentDetail/:param', function () {
             hideAllButCurrent('documentEditor', this.params.param);
         });
-        this.get('#/indexManager', function () {
-            // hideAllButCurrent('exchangeDetail', this.params.param);
+        this.get('#/index', function () {
+            hideAllButCurrent('indexManager');
         });
-        this.get('#/replicationManager', function () {
-            // hideAllButCurrent('exchange', this.params.param);
+        this.get('#/replication', function () {
+            hideAllButCurrent('replication');
 
         });
-        this.get('#/collectionManager', function () {
-            // hideAllButCurrent('home');
+        this.get('#/profile', function () {
+            hideAllButCurrent('profiler');
         });
         this.get('', function () {
             hideAllButCurrent('queryEditor');

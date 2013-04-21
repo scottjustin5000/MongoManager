@@ -8,24 +8,21 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     queryContent = ko.observable(''),
     servers = ko.observableArray(['Select']),
     selectedServer = ko.observable(''),
-   // queryMode = ko.observableArray(['Collections', 'Management', ]),
-   // selectedModeType = ko.observable('Collections'),
     documentResults = ko.observableArray([]),
     db = ko.observable(''),
     currentSelect,
     currentId = ko.observable(),
     dragging = false,
     currentCollection = ko.observable(''),
-    displayDocumentResult = ko.observable(true),
     jsonPreview = ko.observable(''),
      tabCount = 1,
      show = function () {
          visible(true);
-         $("#splitterContainer").show();
+         $("#queryEditor").show();
      },
     hide = function () {
         visible(false);
-        $("#splitterContainer").hide();
+       $("#queryEditor").hide();
     },
     load = function () {
         if (!loaded) {
@@ -35,6 +32,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             editor.getSession().setMode("ace/mode/javascript");
             pubsub.mediator.Subscribe(message.serverTree.serverChanged, updateServerSelection);
             pubsub.mediator.Subscribe(message.serverTree.databaseChanged, updateDatabaseSelection);
+            pubsub.mediator.Subscribe(message.mongo.modeChanged, mongoModeChanged);
             dtx.postJson('api/allServers', { id: '0' },
            function (r) {
                for (var i = 0; i < r.data.children.length; i++) {
@@ -45,10 +43,11 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             $("#rightPane").bind('mousemove', onMouseMove);
             $("#rightPane").bind('mouseup', onMouseUp);
             $('#docoverlay').bind('mousedown', onMouseDown);
+
             $("#splitterContainer").splitter({ minAsize: 100, maxAsize: 300, splitVertical: true, A: $('#leftPane'), B: $('#rightPane'), slave: $("#rightSplitterContainer"), closeableto: 0 });
             $("#rightSplitterContainer").splitter({ splitHorizontal: true, A: $('#rightTopPane'), B: $('#rightBottomPane'), closeableto: 100 });
 
-            var container = document.getElementById("rightTopPane");
+            var container = document.getElementById("queryEditor");
 
             var navitem = container.querySelector("#tabs ul li");
 
@@ -173,20 +172,18 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
    },
     executeQuery = function () {
         if (selectedServer().length > 1 && db().length > 1) {
-            
+
             var con = $("#tabscontent").find("div:visible");
             var index = con[0].id.split("_")[1];
-            //var qt = selectedModeType();
             var editor = ace.edit("code_" + index);
             var query = editor.getValue();
             var server = selectedServer();
-          
+
             var datab = db();
             var query = { 'serverName': server, 'db': datab, 'queryText': query };
 
             documentResults.removeAll();
-          //  if(selectedModeType()==="Collections"){
-          
+  
             dtx.postJson(route.queries.documentQuery, { query: query },
            function (r) {
 
@@ -194,13 +191,12 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
 
                currentCollection(r.collection);
                for (var j = 0; j < data.length; j++) {
-                   dr = { "id": data[j]._id, "properties": data[j], "editable":true};
+                   dr = { "id": data[j]._id, "properties": data[j], "editable": true };
                    documentResults.push(dr);
                }
                $("#documentPanel").show();
                pubsub.mediator.Publish(message.data.cacheCollection, data);
            });
-            //}
         }
         else {
             alert("server and db required");
@@ -208,8 +204,6 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
 
     },
     documentSelected = function (data, event) {
-
-        $("#splitterContainer").hide();
         var obj = data.properties._id + "~~" + currentCollection() + "~~" + selectedServer() + "~~" + db();
         pubsub.mediator.Publish(message.navigation.selectionChanged, 'documentDetail', obj);
     },
@@ -218,6 +212,9 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     },
     updateServerSelection = function (id) {
         selectedServer(id);
+    },
+    mongoModeChanged = function (mode) {
+        console.log(mode);
     },
     getSettings = function () {
         var server = selectedServer();
@@ -265,18 +262,15 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
      return {
          visible: visible,
          db: db,
-         currentId:currentId,
+         currentId: currentId,
          documentSelected: documentSelected,
          currentCollection: currentCollection,
          queryContent: queryContent,
-        // queryMode: queryMode,
-        // selectedModeType: selectedModeType,
          servers: servers,
          toggleOver: toggleOver,
          toggleOut: toggleOut,
          selectedServer: selectedServer,
          displayPage: displayPage,
-         displayDocumentResult: displayDocumentResult,
          documentResults: documentResults,
          jsonPreview: jsonPreview,
          stickPreview: stickPreview,

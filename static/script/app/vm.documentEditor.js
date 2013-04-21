@@ -3,7 +3,6 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
  function ($, ko, route, message, dtx, pubsub, cache) {
 
      var 
-     visible = ko.observable(false),
      selectedValue = ko.observable('json'),
      viewMode = 'json',
      loaded = false,
@@ -23,7 +22,7 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
              }
          });
          $('.docButton').click(function (event) {
-             console.log(event.currentTarget.id);
+             //console.log(event.currentTarget.id);
              if (event.currentTarget.id == "saveDoc") {
                  save();
              }
@@ -44,7 +43,7 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
          db = obj[3];
          pr.removeAll();
          data = cache.getById(id);
-         visible(true);
+          $("#splitterContainer").hide();
          $("#documentEditor").show();
          $("#jsonView").show();
          if (data) {
@@ -74,7 +73,9 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
          jsonValue(text);
      },
      hide = function () {
-         visible(false);
+         console.log('hiding...');
+         $('#documentEditor').hide();
+         $("#splitterContainer").show();
      };
      pr = ko.observableArray([{ "key": " ", "value": " "}]),
 
@@ -102,7 +103,6 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
          jsonValue: jsonValue,
          load: load,
          save: save,
-         visible: visible,
          show: show,
          hide: hide
      }

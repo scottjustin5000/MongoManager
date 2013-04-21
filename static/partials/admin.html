@@ -1,0 +1,50 @@
+<div id="adminEditor" style="display: none;">
+	
+         	
+	<div id="rightAdminSplitterContainer" style="height:95%">
+		<div id="adminRightTopPane">
+	        <div id="adminTabs">
+                <ul>
+                <li id="adminTabHeader_1">Overview</li>
+                <li id="adminTabHeader_2">Users</li>
+                <li id="adminTabHeader_3">Dbs</li>
+                <li id="adminTabHeader_4">Jobs</li>
+                </ul>
+        </div>
+       <div id="adminTabscontent" style="height: 100%">
+            <div class="adminTabpage" id="adminTabpage_1" style="height:100%">
+                <div id="overviewControls">    
+                    <span class="labelText">Run Command:</span> <select data-bind="options:commands, value:selectedCommand, event:{change:selectionChanged}"></select>
+                </div>
+                <div id="overviewResults">
+                   
+<p>results</p> 
+                 
+<textarea style="width: 95%; height: 100%">
+                
+</textarea>
+                
+</div>
+   
+           </div>
+           <div class="adminTabpage" id="adminTabpage_2" style="height:100%">
+                <div id="userControls" style="display: none"></div>
+  
+               <div style="width: 100%; height: 100%;"></div>
+           </div>
+            <div class="adminTabpage" id="adminTabpage_3" style="height:100%">
+                <div id="dbControls" style="display: none"></div>
+    
+               <div style="width: 100%; height: 100%;"></div>
+           </div>
+            <div class="adminTabpage" id="adminTabpage_4" style="height:100%">
+                <div id="jobControls" style="display: none"> </div>
+               <div style="width: 100%; height: 100%;">
+               </div>
+           </div>
+        </div>
+		</div>
+    
+			
+		</div>
+   </div>

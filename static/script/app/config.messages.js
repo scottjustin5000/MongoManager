@@ -7,6 +7,9 @@ function () {
             databaseChanged: "databaseChanged",
             collectionChanged:"collectionChanged"
         },
+        mongo:{
+            modeChanged:"modeChanged"
+        },
         navigation:{
           documentSelected:"documentSelected",
           selectionChanged: "selectionChanged"  
