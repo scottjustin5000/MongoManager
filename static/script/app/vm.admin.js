@@ -1,10 +1,18 @@
-define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext'],
- function ($, ko, route, dtx) {
+define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messages', 'pubsub'],
+ function ($, ko, route, dtx, message, pubsub) {
 
      var 
      loaded = false,
      commands = ko.observableArray(['serverStatus', 'replSetGetStatus', 'dbStats', 'collStats']),
-     selectedCommand = 'serverStatus',
+     selectedCommand = ko.observable('serverStatus'),
+     userCommands = ko.observableArray(['addUser', 'removeUser', 'selectUsers']),
+     selectedUserCommand = ko.observable('addUser'),
+     dbCommands = ko.observableArray(['addDb', 'removeDb']),
+     selectedDbCommand = ko.observable('addDb'),
+     adminSelectedServer = ko.observable(''),
+     adminDb = ko.observable(''),
+     adminCol = ko.observable(''),
+     adminResult = ko.observable(''),
      load = function () {
          if (!loaded) {
 
@@ -30,19 +38,73 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext'],
                  tabs[i].onclick = displayPage;
              }
 
+             $('#executeCommand').bind('click', function (e) {
+
+                 switch (selectedCommand()) {
+
+                     case "serverStatus":
+                         execServerStatus();
+                         break;
+                     case "dbStats":
+                         execDbStats();
+                         break;
+                     case "replSetGetStatus":
+                         break;
+                 }
+
+             });
+
          }
-
-
      },
      show = function () {
-          $('#adminEditor').show();
+         $('#adminEditor').show();
+         pubsub.mediator.Subscribe(message.serverTree.objSelectionChanged, serverTreeSelectionChange);
+
          load();
      },
      hide = function () {
          $('#adminEditor').hide();
-     },
-     selectionChanged = function (event) {
+         pubsub.mediator.Remove(message.serverTree.objSelectionChanged);
 
+     },
+    execServerStatus = function () {
+        var query = { 'serverName': adminSelectedServer() };
+        dtx.postJson(route.queries.serverStats, { query: query },
+           function (r) {
+               var data2 = JSON.stringify(r.data, null, 4);
+
+               adminResult(data2);
+
+           });
+    },
+    execDbStats = function () {
+         var query = { 'server': adminSelectedServer(), 'db':adminDb() };
+        dtx.postJson(route.queries.dbStats, { query: query },
+           function (r) {
+               var data2 = JSON.stringify(r.data, null, 4);
+
+               adminResult(data2);
+
+           });
+    },
+    execCollStats = function () {
+        var query = { 'server': adminSelectedServer(), 'db':adminDb(), 'collection':adminCol() };
+        dtx.postJson(route.queries.collectionStats, { query: query },
+           function (r) {
+               var data2 = JSON.stringify(r.data, null, 4);
+
+               adminResult(data2);
+
+           });
+    },
+     serverTreeSelectionChange = function (evt) {
+         if (evt.type == "server") {
+             adminSelectedServer(evt.id);
+         }
+         else {
+             adminDb(evt.id);
+         }
+      
      },
       displayPage = function () {
 
@@ -63,8 +125,15 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext'],
          load: load,
          show: show,
          hide: hide,
+         adminResult: adminResult,
+         adminCol: adminCol,
+         adminSelectedServer: adminSelectedServer,
+         adminDb: adminDb,
          commands: commands,
          selectedCommand: selectedCommand,
-         selectionChanged: selectionChanged
+         dbCommands:dbCommands,
+         selectedDbCommand:selectedDbCommand,
+         userCommands:userCommands,
+         selectedUserCommand:selectedUserCommand
      }
  });

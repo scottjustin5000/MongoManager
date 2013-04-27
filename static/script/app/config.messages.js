@@ -5,7 +5,8 @@ function () {
         serverTree:{
             serverChanged:"serverChanged",
             databaseChanged: "databaseChanged",
-            collectionChanged:"collectionChanged"
+            collectionChanged:"collectionChanged",
+            objSelectionChanged:"objSelectionChanged"
         },
         mongo:{
             modeChanged:"modeChanged"

@@ -35,14 +35,25 @@ databaseController.prototype = {
                 var f = m.formatCollectionsResponse(collections, serverName);
  
                 res.send(f);
-
-      
- 
                });
-
-                
             }); 
+    },
+    getDbStats: function(req, res){
+         var serverName = req.body.server;
+         var dbName = req.body.db;
+         
+         mongoClient.connect("mongodb://" + serverName + "/" + dbName, function (err, db) {
 
+            db.command({ dbStats: dbName }, function (err, dx) {
+                if (!err) {
+                    console.log(dx);
+                    var results = "{ \"data\" :" + dx + ",\"status\":\"success\"}";
+                    res.send(results);
+                }
+
+            });
+
+        });
     }
     /*,
     getIndexInfo: function(collection){

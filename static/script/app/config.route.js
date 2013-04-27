@@ -9,8 +9,9 @@ function () {
         queries:{
           documentQuery:"api/documentQuery",
           replaceDocument:"api/replaceDocument",
-          managementQuery:"api/managementQuery",
-          collectionStats:"api//collectionStats"
+          serverStats:"api/serverStats",
+          dbStats:"api/dbStats",
+          collectionStats:"api/collectionStats"
         },
         viewModels: {
             

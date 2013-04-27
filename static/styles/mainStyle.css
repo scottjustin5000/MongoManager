@@ -104,6 +104,10 @@ background:#f4f4f4;
 width:100%;
 overflow:auto;
 }
+ #overviewResults{
+     height: 80%;
+ }
+ 
  /*
      profile
  */

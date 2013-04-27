@@ -18,10 +18,12 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
      tabCount = 1,
      show = function () {
          visible(true);
+          pubsub.mediator.Subscribe(message.serverTree.objSelectionChanged, serverTreeSelectionChange);
          $("#queryEditor").show();
      },
     hide = function () {
         visible(false);
+         pubsub.mediator.Remove(message.serverTree.objSelectionChanged);
        $("#queryEditor").hide();
     },
     load = function () {
@@ -30,8 +32,6 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             var editor = ace.edit("code_1");
             editor.setTheme("ace/theme/tomorrow");
             editor.getSession().setMode("ace/mode/javascript");
-            pubsub.mediator.Subscribe(message.serverTree.serverChanged, updateServerSelection);
-            pubsub.mediator.Subscribe(message.serverTree.databaseChanged, updateDatabaseSelection);
             pubsub.mediator.Subscribe(message.mongo.modeChanged, mongoModeChanged);
             dtx.postJson('api/allServers', { id: '0' },
            function (r) {
@@ -207,12 +207,15 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
         var obj = data.properties._id + "~~" + currentCollection() + "~~" + selectedServer() + "~~" + db();
         pubsub.mediator.Publish(message.navigation.selectionChanged, 'documentDetail', obj);
     },
-    updateDatabaseSelection = function (id) {
-        db(id);
+    serverTreeSelectionChange = function(evt){
+        if(evt.type=="server"){
+             selectedServer(evt.id);
+        }
+        else{
+             db(evt.id);
+        }
     },
-    updateServerSelection = function (id) {
-        selectedServer(id);
-    },
+
     mongoModeChanged = function (mode) {
         console.log(mode);
     },

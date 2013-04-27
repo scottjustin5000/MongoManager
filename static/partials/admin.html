@@ -14,13 +14,25 @@
        <div id="adminTabscontent" style="height: 100%">
             <div class="adminTabpage" id="adminTabpage_1" style="height:100%">
                 <div id="overviewControls">    
-                    <span class="labelText">Run Command:</span> <select data-bind="options:commands, value:selectedCommand, event:{change:selectionChanged}"></select>
-                </div>
+                    <span class="labelText">Command:</span> <select data-bind="options:commands, value:selectedCommand"></select>
+                      <button id="executeCommand"><img src="/images/execute.png" alt="execute query"/></button>  
+                    <div id="adminServerSelect">  
+                         <span class="labelText">Server:</span> 
+                         <input type="text" placeholder="use server" data-bind="value: adminSelectedServer"/>
+                     </div>
+                    <div id="adminDbselect">
+                     <span class="labelText">Db:</span>  
+                        <input type="text" placeholder="use db" data-bind="value: adminDb"/>
+                   </div>
+                 <!-- <div id="adminColselect">
+                     <span class="labelText">Col:</span>  
+                        <input type="text" placeholder="collection" data-bind="value: adminCol"/>
+                   </div>-->
+               </div>
+                
                 <div id="overviewResults">
-                   
-<p>results</p> 
                  
-<textarea style="width: 95%; height: 100%">
+<textarea style="resize:none; width: 95%; height: 100%" data-bind="value:adminResult">
                 
 </textarea>
                 
@@ -29,12 +41,14 @@
            </div>
            <div class="adminTabpage" id="adminTabpage_2" style="height:100%">
                 <div id="userControls" style="display: none"></div>
-  
+                <span class="labelText">Command:</span> <select data-bind="options:userCommands, value:selectedUserCommand"></select>
+                      <button id="executeUserCommand"><img src="/images/execute.png" alt="execute"/></button>  
                <div style="width: 100%; height: 100%;"></div>
            </div>
             <div class="adminTabpage" id="adminTabpage_3" style="height:100%">
                 <div id="dbControls" style="display: none"></div>
-    
+                    <span class="labelText">Command:</span> <select data-bind="options:dbCommands, value:selectedDbCommand"></select>
+                      <button id="executeDbCommand"><img src="/images/execute.png" alt="execute"/></button>  
                <div style="width: 100%; height: 100%;"></div>
            </div>
             <div class="adminTabpage" id="adminTabpage_4" style="height:100%">

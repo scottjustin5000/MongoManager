@@ -25,30 +25,7 @@ queryController.prototype = {
             // db.close();
         });
     },
-    executeManagementSelect: function (req, res) {
-        var data = req.body.query;
-        var serverName = data.serverName;
-        var dbName = data.db;
-        mongoClient.connect("mongodb://" + serverName + "/" + dbName,
-        function (err, db) {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                var admin = db.admin();
-                admin.serverStatus(function (err, results) {
-                    if (!err) {
-                       // console.log(results);
-                        var dd = { 'data': JSON.stringify(results), 'status': 'success' };
-                        res.send(dd);
-                    }
-                    else {
-                        console.log(err);
-                    }
-                });
-            }
-        });
-    },
+    
     executeReplace: function (req, res) {
 
         var datum = req.body.cmd;

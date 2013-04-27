@@ -49,12 +49,13 @@ function ($, ko, route, message, dtx, pubsub) {
                    "plugins": ["themes", "json_data", "crrm", "ui"]
                }).bind("select_node.jstree", function (e, data) {
                   
+                  pubsub.mediator.Publish(message.serverTree.objSelectionChanged, {"type":data.rslt.obj.attr("type"),"id" :data.rslt.obj.attr("id")});
                    switch (data.rslt.obj.attr("type")) {
                        case "server":
-                           pubsub.mediator.Publish(message.serverTree.serverChanged, data.rslt.obj.attr("id"));
+                          // pubsub.mediator.Publish(message.serverTree.objSelectionChanged, {"type":"server","id" :data.rslt.obj.attr("id")});
                            break;
                        case "database":
-                           pubsub.mediator.Publish(message.serverTree.databaseChanged, data.rslt.obj.attr("id"));
+                          // pubsub.mediator.Publish(message.serverTree.objSelectionChanged, {"type":"db","id" :data.rslt.obj.attr("id")});
                            break;
                        case "collection":
 

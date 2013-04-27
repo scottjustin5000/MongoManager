@@ -35,7 +35,6 @@ collectionController.prototype = {
         var serverName = req.body.server;
         var dbName = req.body.db;
         var collection = req.body.collection;
-        var props = [];
         mongoClient.connect("mongodb://" + serverName + "/" + dbName, function (err, db) {
 
             db.command({ collStats: collection }, function (err, dx) {

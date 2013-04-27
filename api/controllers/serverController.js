@@ -42,8 +42,27 @@ serverController.prototype = {
           
         });
     },
-    getDbs: function (ip) {
-
+   getServerStatus: function (req, res) {
+        var data = req.body.query;
+        var serverName = data.serverName;
+        mongoClient.connect("mongodb://" + serverName + "/admin",
+        function (err, db) {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                var admin = db.admin();
+                admin.serverStatus(function (err, results) {
+                    if (!err) {
+                        var dd = { 'data': results, 'status': 'success' };
+                        res.send(dd);
+                    }
+                    else {
+                        console.log(err);
+                    }
+                });
+            }
+        });
     },
     getCollections: function (dbName) {
 

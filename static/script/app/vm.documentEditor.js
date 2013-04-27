@@ -43,7 +43,7 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
          db = obj[3];
          pr.removeAll();
          data = cache.getById(id);
-          $("#splitterContainer").hide();
+         $("#splitterContainer").hide();
          $("#documentEditor").show();
          $("#jsonView").show();
          if (data) {
@@ -73,7 +73,6 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
          jsonValue(text);
      },
      hide = function () {
-         console.log('hiding...');
          $('#documentEditor').hide();
          $("#splitterContainer").show();
      };
