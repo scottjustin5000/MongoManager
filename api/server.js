@@ -1,9 +1,10 @@
 var express = require('express')
 , app = module.exports = express()
-,query = require('./controllers/queryController.js')
+, query = require('./controllers/queryController.js')
 , serverController = require('./controllers/serverController.js')
 , databaseController = require('./controllers/databaseController.js')
-, collectionController = require('./controllers/collectionController.js');
+, collectionController = require('./controllers/collectionController.js')
+, userController = require('./controllers/userController.js');
 
 app.use(express.bodyParser());
 
@@ -33,7 +34,6 @@ app.post('/expandNavigation', function (req, res) {
             break;
         default:
             return res.send(200);
-
     }
 
 });
@@ -60,5 +60,9 @@ app.post('/createCollection', function (req, res) {
 app.post('/replaceDocument', function (req, res) {
        var q = new query();
     q.executeReplace(req, res);
+});
+app.post('addUser', function (req, res) {
+    var uc = new userController();
+    uc.addUser(req, res);
 });
 

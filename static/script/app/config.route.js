@@ -14,7 +14,8 @@ function () {
           collectionStats:"api/collectionStats"
         },
         commands: {
-           createCollection:"api/createCollection" 
+           createCollection:"api/createCollection",
+           addUser:"api/addUser" 
         }
 
     };

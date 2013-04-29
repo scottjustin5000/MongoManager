@@ -39,8 +39,8 @@ collectionController.prototype = {
 
             db.command({ collStats: collection }, function (err, dx) {
                 if (!err) {
-                    console.log(dx);
-                    var results = "{ \"data\" :" + JSON.stringify(dx) + ",\"status\":\"success\"}";
+
+                    var results = { 'data': dx, 'status': 'success' };
                     res.send(results);
                 }
 
@@ -81,13 +81,13 @@ collectionController.prototype = {
             db.createCollection(collection, options, function (err, info) {
                 if (err) {
                     console.log(err);
-                      res.send("{\"status\":\"error\"}");
+                    res.send("{\"status\":\"error\"}");
                 }
-                else{
-                     res.send("{\"status\":\"success\"}");
+                else {
+                    res.send("{\"status\":\"success\"}");
                 }
-     
-               
+
+
             });
         });
     },

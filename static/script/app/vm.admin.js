@@ -16,15 +16,15 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
      selectedBackupType = ko.observable('mongoDump'),
      backupIntervals = ko.observableArray(['monthly', 'weekly', 'daily', 'hourly']),
      selectedBackupInterval = ko.observable('daily'),
-     backupHours = ko.observableArray(['00:00','01:00', '02:00', '03:00', '04:00', '05:00','06:00','07:00','08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']),
+     backupHours = ko.observableArray(['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']),
      selectedHourInterval = ko.observable('12:00'),
      adminDb = ko.observable(''),
      adminCol = ko.observable(''),
      adminResult = ko.observable(''),
+     userRoles = ko.observableArray(['read','readWrite','dbAdmin','userAdmin']),
+     selectedRole = ko.observable(''),
      load = function () {
          if (!loaded) {
-
-             // $("#rightAdminSplitterContainer").splitter({ splitHorizontal: true, A: $('#adminRightTopPane'), B: $('#adminRightBottomPane'), closeableto: 100 });
 
 
              var container = document.getElementById("adminEditor");
@@ -76,28 +76,39 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
 
      },
     execServerStatus = function () {
-        var query = { 'serverName': adminSelectedServer() };
-        dtx.postJson(route.queries.serverStats, { query: query },
+        if (adminSelectedServer().length > 1) {
+            var query = { 'serverName': adminSelectedServer() };
+            dtx.postJson(route.queries.serverStats, { query: query },
            function (r) {
                var data2 = JSON.stringify(r.data, null, 4);
 
                adminResult(data2);
 
            });
+        }
+        else {
+            alert("server selection required");
+        }
+
     },
     execDbStats = function () {
-         var query = { 'server': adminSelectedServer(), 'db':adminDb() };
-        dtx.postJson(route.queries.dbStats, { query: query },
+        if (adminSelectedServer().length > 1 && adminDb().length > 1) {
+            var query = { 'server': adminSelectedServer(), 'db': adminDb() };
+            dtx.postJson(route.queries.dbStats, query,
            function (r) {
-               var data2 = JSON.stringify(r.data, null, 4);
 
+               var data2 = JSON.stringify(r.data, null, 4);
                adminResult(data2);
 
            });
+        }
+        else {
+            alert("server and db selection required");
+        }
     },
     execCollStats = function () {
-        var query = { 'server': adminSelectedServer(), 'db':adminDb(), 'collection':adminCol() };
-        dtx.postJson(route.queries.collectionStats, { query: query },
+        var query = { 'server': adminSelectedServer(), 'db': adminDb(), 'collection': adminCol() };
+        dtx.postJson(route.queries.collectionStats, query,
            function (r) {
                var data2 = JSON.stringify(r.data, null, 4);
 
@@ -112,7 +123,7 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
          else {
              adminDb(evt.id);
          }
-      
+
      },
       displayPage = function () {
 
@@ -138,18 +149,20 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
          adminSelectedServer: adminSelectedServer,
          adminDb: adminDb,
          commands: commands,
-         backupTypes:backupTypes,
-         selectedBackupType:selectedBackupType,
+         backupTypes: backupTypes,
+         selectedBackupType: selectedBackupType,
          selectedCommand: selectedCommand,
-         backupIntervals:backupIntervals,
-         selectedBackupInterval:selectedBackupInterval,
-         backupHours:backupHours,
-         selectedHourInterval:selectedHourInterval,
-         dbCommands:dbCommands,
-         selectedDbCommand:selectedDbCommand,
-         jobCommands:jobCommands,
-         selectedJobCommand:selectedJobCommand,
-         userCommands:userCommands,
-         selectedUserCommand:selectedUserCommand
+         backupIntervals: backupIntervals,
+         selectedBackupInterval: selectedBackupInterval,
+         backupHours: backupHours,
+         selectedHourInterval: selectedHourInterval,
+         dbCommands: dbCommands,
+         selectedDbCommand: selectedDbCommand,
+         jobCommands: jobCommands,
+         selectedJobCommand: selectedJobCommand,
+         userCommands: userCommands,
+         selectedUserCommand: selectedUserCommand,
+         userRoles:userRoles,
+         selectedRole:selectedRole
      }
  });

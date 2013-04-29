@@ -57,9 +57,7 @@ serverController.prototype = {
                         var dd = { 'data': results, 'status': 'success' };
                         res.send(dd);
                     }
-                    else {
-                        console.log(err);
-                    }
+
                 });
             }
         });
