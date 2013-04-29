@@ -15,101 +15,116 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     dragging = false,
     currentCollection = ko.observable(''),
     jsonPreview = ko.observable(''),
-     tabCount = 1,
+    newCollection = ko.observable(''),
+    collectionSize = ko.observable(''),
+    collectionMax = ko.observable(''),
+    tabCount = 1,
      show = function () {
          visible(true);
-          pubsub.mediator.Subscribe(message.serverTree.objSelectionChanged, serverTreeSelectionChange);
+         pubsub.mediator.Subscribe(message.serverTree.objSelectionChanged, serverTreeSelectionChange);
          $("#queryEditor").show();
      },
     hide = function () {
         visible(false);
-         pubsub.mediator.Remove(message.serverTree.objSelectionChanged);
-       $("#queryEditor").hide();
+        pubsub.mediator.Remove(message.serverTree.objSelectionChanged);
+        $("#queryEditor").hide();
     },
     load = function () {
         if (!loaded) {
-
-            var editor = ace.edit("code_1");
-            editor.setTheme("ace/theme/tomorrow");
-            editor.getSession().setMode("ace/mode/javascript");
-            pubsub.mediator.Subscribe(message.mongo.modeChanged, mongoModeChanged);
+            attachStyles();
+            attachEvents();
             dtx.postJson('api/allServers', { id: '0' },
            function (r) {
                for (var i = 0; i < r.data.children.length; i++) {
                    servers.push(r.data.children[i].data);
                }
            });
-
-            $("#rightPane").bind('mousemove', onMouseMove);
-            $("#rightPane").bind('mouseup', onMouseUp);
-            $('#docoverlay').bind('mousedown', onMouseDown);
-
-            $("#splitterContainer").splitter({ minAsize: 100, maxAsize: 300, splitVertical: true, A: $('#leftPane'), B: $('#rightPane'), slave: $("#rightSplitterContainer"), closeableto: 0 });
-            $("#rightSplitterContainer").splitter({ splitHorizontal: true, A: $('#rightTopPane'), B: $('#rightBottomPane'), closeableto: 100 });
-
-            var container = document.getElementById("queryEditor");
-
-            var navitem = container.querySelector("#tabs ul li");
-
-            var ident = navitem.id.split("_")[1];
-
-
-            navitem.parentNode.setAttribute("data-current", ident);
-
-            navitem.setAttribute("class", "tabActiveHeader");
-
-            var pages = container.querySelectorAll(".tabpage");
-            pages[0].style.display = "block";
-            for (var i = 1; i < pages.length; i++) {
-                pages[i].style.display = "none";
-            }
-            var tabs = container.querySelectorAll("#tabs ul li");
-            for (var i = 0; i < tabs.length; i++) {
-                tabs[i].onclick = displayPage;
-            }
-
-            $('.queryButton').bind('click', function (e) {
-
-                switch (e.currentTarget.id) {
-
-                    case "executeQuery":
-                        executeQuery();
-                        break;
-                    case "openQuery":
-                        openQuery();
-                        break;
-                    case "saveQuery":
-                        saveQuery();
-                        break;
-                    case "newQuery":
-                        newQuery();
-                        break;
-                    case "cancelQuery":
-                        cancelQuery();
-                        break;
-                }
-
-            });
         }
         loaded = true;
     },
-    toggleOver = function (data, evt) {
+    attachStyles = function () {
 
-        if (currentSelect) {
+        var editor = ace.edit("code_1");
+        editor.setTheme("ace/theme/tomorrow");
+        editor.getSession().setMode("ace/mode/javascript");
 
-            $(currentSelect).bind('mouseout', toggleOut);
-            $('#docoverlay').hide();
-            currentSelect = null;
+        $("#splitterContainer").splitter({ minAsize: 100, maxAsize: 300, splitVertical: true, A: $('#leftPane'), B: $('#rightPane'), slave: $("#rightSplitterContainer"), closeableto: 0 });
+        $("#rightSplitterContainer").splitter({ splitHorizontal: true, A: $('#rightTopPane'), B: $('#rightBottomPane'), closeableto: 100 });
+        var container = document.getElementById("queryEditor");
+
+        var navitem = container.querySelector("#tabs ul li");
+
+        var ident = navitem.id.split("_")[1];
+
+
+        navitem.parentNode.setAttribute("data-current", ident);
+
+        navitem.setAttribute("class", "tabActiveHeader");
+
+        var pages = container.querySelectorAll(".tabpage");
+        pages[0].style.display = "block";
+        for (var i = 1; i < pages.length; i++) {
+            pages[i].style.display = "none";
         }
-        currentId(data.properties._id);
-        jsonPreview(JSON.stringify(data.properties, null, 4));
-        var mouseX = evt.pageX;
-        var mouseY = evt.pageY - 200;
-
-        $('#docoverlay').css({ 'top': mouseY, 'left': mouseX });
-        $('#docoverlay').show();
-
+        var tabs = container.querySelectorAll("#tabs ul li");
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].onclick = displayPage;
+        }
     },
+    attachEvents = function () {
+
+        //  pubsub.mediator.Subscribe(message.mongo.modeChanged, mongoModeChanged);
+
+        $("#rightPane").bind('mousemove', onMouseMove);
+        $("#rightPane").bind('mouseup', onMouseUp);
+        $('#docoverlay').bind('mousedown', onMouseDown);
+        $('#closeNewCollection').bind('click', function (e) {
+            $('#crtoverlay').hide();
+        });
+        $("#createCollection").bind('click', sendNewCollection);
+
+        $('.queryButton').bind('click', controlPanelClick);
+    },
+    controlPanelClick = function (e) {
+        switch (e.currentTarget.id) {
+
+            case "executeQuery":
+                executeQuery();
+                break;
+            case "openQuery":
+                openQuery();
+                break;
+            case "saveQuery":
+                saveQuery();
+                break;
+            case "newQuery":
+                newQuery();
+                break;
+            case "cancelQuery":
+                cancelQuery();
+                break;
+            case "newcol":
+                newCollectionRequest(e);
+                break;
+        }
+    },
+     toggleOver = function (data, evt) {
+
+         if (currentSelect) {
+
+             $(currentSelect).bind('mouseout', toggleOut);
+             $('#docoverlay').hide();
+             currentSelect = null;
+         }
+         currentId(data.properties._id);
+         jsonPreview(JSON.stringify(data.properties, null, 4));
+         var mouseX = evt.pageX;
+         var mouseY = evt.pageY - 200;
+
+         $('#docoverlay').css({ 'top': mouseY, 'left': mouseX });
+         $('#docoverlay').show();
+
+     },
     toggleOut = function (data, evt) {
         $('#docoverlay').hide();
     },
@@ -118,7 +133,6 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
          currentSelect = elm;
          $(elm).unbind('mouseout');
      },
-
      onMouseMove = function (e) {
          if (dragging) {
              $('#docoverlay').css({ 'top': e.clientY - 10, 'left': e.clientX - 10 });
@@ -183,7 +197,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             var query = { 'serverName': server, 'db': datab, 'queryText': query };
 
             documentResults.removeAll();
-  
+
             dtx.postJson(route.queries.documentQuery, { query: query },
            function (r) {
 
@@ -207,18 +221,18 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
         var obj = data.properties._id + "~~" + currentCollection() + "~~" + selectedServer() + "~~" + db();
         pubsub.mediator.Publish(message.navigation.selectionChanged, 'documentDetail', obj);
     },
-    serverTreeSelectionChange = function(evt){
-        if(evt.type=="server"){
-             selectedServer(evt.id);
+    serverTreeSelectionChange = function (evt) {
+        if (evt.type == "server") {
+            selectedServer(evt.id);
         }
-        else{
-             db(evt.id);
+        else {
+            db(evt.id);
         }
     },
-
-    mongoModeChanged = function (mode) {
-        console.log(mode);
-    },
+     /*
+     mongoModeChanged = function (mode) {
+     console.log(mode);
+     },*/
     getSettings = function () {
         var server = selectedServer();
         var datab = db();
@@ -259,7 +273,31 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
         document.getElementById("tabpage_" + ident).style.display = "block";
         this.parentNode.setAttribute("data-current", ident);
 
+    },
+    newCollectionRequest = function (evt) {
 
+        var mouseX = evt.pageX - 200;
+        var mouseY = evt.pageY;
+
+        $('#crtoverlay').css({ 'top': mouseY, 'left': mouseX });
+        $('#crtoverlay').show();
+    },
+    sendNewCollection = function (e) {
+        $('#crtoverlay').hide();
+        if (selectedServer().length > 1 && db().length > 1) {
+          var server = selectedServer();
+          var datab = db();
+          var cmd = { 'server': server, 'db': datab, 'collection': newCollection() };
+           dtx.postJson(route.commands.createCollection, cmd,
+           function (r) {
+               for (var i = 0; i < r.data.children.length; i++) {
+                   servers.push(r.data.children[i].data);
+               }
+           });
+        }
+        else{
+             alert("server and db required");
+        }
 
     };
      return {
@@ -273,10 +311,13 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
          toggleOver: toggleOver,
          toggleOut: toggleOut,
          selectedServer: selectedServer,
+         collectionSize: collectionSize,
+         collectionMax: collectionMax,
          displayPage: displayPage,
          documentResults: documentResults,
          jsonPreview: jsonPreview,
          stickPreview: stickPreview,
+         newCollection: newCollection,
          load: load,
          hide: hide,
          show: show

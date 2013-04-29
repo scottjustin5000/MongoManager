@@ -52,8 +52,32 @@
                <div style="width: 100%; height: 100%;"></div>
            </div>
             <div class="adminTabpage" id="adminTabpage_4" style="height:100%">
-                <div id="jobControls" style="display: none"> </div>
-               <div style="width: 100%; height: 100%;">
+                <div id="jobControls">
+                     <span class="labelText">Command:</span> <select data-bind="options:jobCommands, value:selectedJobCommand"></select>
+                     </div>
+               <div id="backup" class="adminJobContainer">
+                   <span class="labelText">Options</span>
+                      <div class="adminField">
+                  <span class="labelText">Type:</span>  <select data-bind="options:backupTypes, value:selectedBackupType"></select>
+
+                   </div>
+                   <span class="labelText">Schedule</span>
+                   <div class="adminField">
+                <span class="labelText">Backup:</span>
+                       <select data-bind="options:backupIntervals, value:selectedBackupInterval"></select> at 
+                       <select data-bind="options:backupHours, value:selectedHourInterval"></select>
+                      <span class="labelText"> UTC</span>
+
+                   </div>
+                    <span class="labelText">Execute</span>   <button id="executeJobCommand"><img src="/images/execute.png" alt="execute"/></button>  
+               </div>
+                 <div id="restore" style="width: 100%; height: 100%; display: none">
+                   <span class="labelText">Options</span>
+                      <div class="adminField">
+           
+
+                   </div>
+              
                </div>
            </div>
         </div>

@@ -53,11 +53,10 @@ app.post('/collectionStats', function (req, res) {
     var cnt = new collectionController();
     cnt.getCollectionStats(req, res);
 });
-/*
-app.post('/managementQuery', function (req, res) {
-    var q = new query();
-    q.executeManagementSelect(req, res);
-});*/
+app.post('/createCollection', function (req, res) {
+       var cnt = new collectionController();
+    cnt.createCollection(req, res);
+});
 app.post('/replaceDocument', function (req, res) {
        var q = new query();
     q.executeReplace(req, res);

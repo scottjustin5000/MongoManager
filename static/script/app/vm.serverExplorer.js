@@ -11,7 +11,7 @@ function ($, ko, route, message, dtx, pubsub) {
                 displayOverlay(true);
 
             });
-            $('#closeColStats').bind('click', function (e) {
+            $('#closeNewCollection').bind('click', function (e) {
                 $('#colStatsOverlay').hide();
             });
         }

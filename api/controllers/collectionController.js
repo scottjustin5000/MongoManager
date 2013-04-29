@@ -70,6 +70,29 @@ collectionController.prototype = {
                 res.send(results);
             });
         });
+    },
+    createCollection: function (req, res) {
+        var serverName = req.body.server;
+        var dbName = req.body.db;
+        var collection = req.body.collection;
+        var options = req.body.options;
+        mongoClient.connect("mongodb://" + serverName + "/" + dbName, function (err, db) {
+
+            db.createCollection(collection, options, function (err, info) {
+                if (err) {
+                    console.log(err);
+                      res.send("{\"status\":\"error\"}");
+                }
+                else{
+                     res.send("{\"status\":\"success\"}");
+                }
+     
+               
+            });
+        });
+    },
+    deleteCollection: function (req, res) {
+
     }
 };
 module.exports = collectionController;

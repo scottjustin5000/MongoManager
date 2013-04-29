@@ -13,8 +13,8 @@ function () {
           dbStats:"api/dbStats",
           collectionStats:"api/collectionStats"
         },
-        viewModels: {
-            
+        commands: {
+           createCollection:"api/createCollection" 
         }
 
     };

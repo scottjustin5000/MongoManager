@@ -36,10 +36,27 @@
      <div class="docPreviewcontainer"> 
               <div style="padding-top: 15px;">
                    <label class="formlabel"> &nbsp;&nbsp;Document:</label> <span data-bind="text:currentId"></span>
-                       <!--<input data-bind="value:server" maxlength="75" class="required"/>-->
                </div>
        
                   <textarea id="docPreviewTextArea" data-bind="value:jsonPreview"></textarea>
+              <p></p>
+                
+     </div>
+    </div>
+     <div id="crtoverlay" style="display: none">
+     <div class="docCreatecontainer"> 
+              <div style="padding-top: 15px;float: left">
+                   <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Name:</label> <input type="text" data-bind="value:newCollection"></input>
+               </div>
+          <div style="text-align: right"><img id="closeNewCollection" src="/images/close.png" alt="close"/></div>  
+         <div style="clear: both">
+    <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Size:</label> <input type="text" data-bind="value:collectionSize"></input><br/>
+              <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Max:</label> <input type="text" data-bind="value:collectionMax"></input>
+               </div>
+         <div style="text-align: center">
+              <button id="createCollection"> <label class="formlabel">Create</label></button>   
+         </div>
+                 
               <p></p>
                 
      </div>

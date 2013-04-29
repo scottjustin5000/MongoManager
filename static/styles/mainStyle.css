@@ -107,7 +107,19 @@ overflow:auto;
  #overviewResults{
      height: 80%;
  }
- 
+ .adminField{
+     background-color: #ffffff;
+
+ }
+ .adminJobContainer{
+    width: 70%; 
+    height: 100%; 
+    margin: auto; 
+    background-color: #f4f4f4 ;
+    -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+ }
  /*
      profile
  */
@@ -121,7 +133,6 @@ padding:0;
      height:5%;
      min-height:55px;
      background-color: #c4dcfb;
-    /*background-color:*/
  }
  #profileRightSplitterContainer{
 width:100%;
@@ -154,7 +165,6 @@ padding:0;
      height:5%;
      min-height:55px;
      background-color: #c4dcfb;
-    /*background-color:*/
  }
  #replicationRightSplitterContainer{
 width:100%;
@@ -321,6 +331,41 @@ overflow:auto;
    -o-user-select: none;
    user-select: none;
 }
+ /*new/rename collection overlay*/
+ #crtoverlay{
+   position:absolute;    
+  -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+   z-index: 10001;
+
+ }
+   .docCreatecontainer {
+  /*margin: 20px auto 50px;*/
+  font-family: Populaire, arial; 
+  font-size: 22px;
+  position:absolute; 
+  margin-left: 25%;
+  top:10%;
+  width: 300px;
+  background: rgba(255, 255, 255, 1);
+  color: rgba(0, 0, 0, 1);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+  -webkit-box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  text-align: left;
+  z-index: 10001;
+ 
+}
+ 
+ 
 /* Splitbar styles; these are the default class names and required styles */
 .splitbarV {
 float:left;
