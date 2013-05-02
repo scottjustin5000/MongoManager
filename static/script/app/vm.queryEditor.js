@@ -19,6 +19,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     collectionSize = ko.observable(''),
     collectionMax = ko.observable(''),
     tabCount = 1,
+    capCollection = ko.observable(false),
      show = function () {
          visible(true);
          pubsub.mediator.Subscribe(message.serverTree.objSelectionChanged, serverTreeSelectionChange);
@@ -275,7 +276,6 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
 
     },
     newCollectionRequest = function (evt) {
-
         var mouseX = evt.pageX - 200;
         var mouseY = evt.pageY;
 
@@ -285,18 +285,22 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     sendNewCollection = function (e) {
         $('#crtoverlay').hide();
         if (selectedServer().length > 1 && db().length > 1) {
-          var server = selectedServer();
-          var datab = db();
-          var cmd = { 'server': server, 'db': datab, 'collection': newCollection() };
-           dtx.postJson(route.commands.createCollection, cmd,
+            var server = selectedServer();
+            var datab = db();
+
+            var cmd = { 'server': server, 'db': datab, 'collection': newCollection() };
+            if (capCollection() == true) {
+                cmd.options = { capped: true, size: collectionSize(), max: collectionMax() };
+            }
+            dtx.postJson(route.commands.createCollection, cmd,
            function (r) {
                for (var i = 0; i < r.data.children.length; i++) {
                    servers.push(r.data.children[i].data);
                }
            });
         }
-        else{
-             alert("server and db required");
+        else {
+            alert("server and db required");
         }
 
     };
@@ -318,6 +322,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
          jsonPreview: jsonPreview,
          stickPreview: stickPreview,
          newCollection: newCollection,
+         capCollection:capCollection,
          load: load,
          hide: hide,
          show: show

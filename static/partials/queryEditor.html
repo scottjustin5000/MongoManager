@@ -49,10 +49,14 @@
                    <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Name:</label> <input type="text" data-bind="value:newCollection"></input>
                </div>
           <div style="text-align: right"><img id="closeNewCollection" src="/images/close.png" alt="close"/></div>  
-         <div style="clear: both">
+        <div style="clear: both">
+         <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Capped Collection:</label> 
+            <input type="checkbox" data-bind="checked: capCollection" />
+        </div>
+          <div data-bind="visible:capCollection">
     <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Size:</label> <input type="text" placeholder="optional" data-bind="value:collectionSize"></input><br/>
               <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Max:</label> <input placeholder="optional" type="text" data-bind="value:collectionMax"></input>
-               </div>
+        </div>
          <div style="text-align: center">
               <button id="createCollection"> <label class="formlabel">Create</label></button>   
          </div>
