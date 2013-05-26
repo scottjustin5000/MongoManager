@@ -231,10 +231,6 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             db(evt.id);
         }
     },
-     /*
-     mongoModeChanged = function (mode) {
-     console.log(mode);
-     },*/
     getSettings = function () {
         var server = selectedServer();
         var datab = db();

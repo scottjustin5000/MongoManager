@@ -48,24 +48,41 @@
                 <span class="labelText">Command:</span> <select data-bind="options:userCommands, value:selectedUserCommand"></select>
   
                <div class="adminJobContainer">
-                  <!--<div> </div>-->
-                   <div id="addUSerContainer" style="float: left">
+                  <div id="adduser"> 
+                   <div id="addUserContainer" style="float: left">
                        <span class="labelText">New Priviledge</span> <br/>
                   <input data-bind="{value:mUserName}" type="text" placeholder="user name"/>
-                       <br /><input data-bind="{value:mPassword}" type="text" placeholder="password"/><br/>
+                       <br /><input data-bind="{value:mPassword}" type="password" placeholder="password"/><br/>
+                       <input id="passwordConfirm" data-bind="{value:mConfirmPassword}" type="password" placeholder="confirm password"/><br/>
+                       <span id="validateStatus"></span>
                     </div>
                      <div id="roleDiv" style="float: left">
                           <span class="labelText">Roles</span>   <br />
                          <select multiple="multiple" data-bind="options:userRoles, selectedOptions:selectedRole"></select>
-                         <button title="add additional profile" data-bind="enable: profiles().length > 0" id="executeAdditionalProfile"><img src="/images/add-icon.png" alt="execute"/></button>  
-                         <button title="commit all user profiles" id="executeUserCommand"><img src="/images/execute.png" alt="execute"/></button>  
+                         <button data-bind="{enable: mPassword() == mConfirmPassword()}"  title="add additional profile"  id="executeAdditionalProfile"><img src="/images/add-icon.png" alt="execute"/></button>  
+                         <button data-bind="{enable: mPassword() == mConfirmPassword()}"  title="commit all user profiles" id="executeUserCommand"><img src="/images/execute.png" alt="execute"/></button>  
                      </div>
                    <hr style="clear: both" data-bind="visible:profiles().length > 0"/>
                    <div  id="savedProfile" data-bind="foreach: profiles">
+                      <p>
                       <span class="labelText">User:</span><input data-bind="{value:username}" type="text"/><br />
                      <span class="labelText">Server:</span><input data-bind="{value:server}" type="text"/><br />
                      <span class="labelText">Db:</span><input data-bind="{value:db}" type="text"/><br />
                      <span class="labelText">Roles:</span><input data-bind="{value:flatRoles}" type="text"/>
+                      </p>
+                   </div>
+                   </div>
+               </div>
+               <div id="modifyUser" style="display: none">
+                <div  id="savedProfile" data-bind="foreach: userProfiles">
+                      <p>
+                      <span class="labelText">User:</span><input data-bind="{value:username}" type="text"/><br />
+                     <span class="labelText">Server:</span><input data-bind="{value:server}" type="text"/><br />
+                     <span class="labelText">Db:</span><input data-bind="{value:db}" type="text"/><br />
+                     <span class="labelText">Roles:</span><input data-bind="{value:flatRoles}" type="text"/>
+                      <br />
+                          <button>Edit</button><button>delete</button>
+                      </p>
                    </div>
                </div>
            </div>
@@ -93,7 +110,8 @@
                       <span class="labelText"> UTC</span>
 
                    </div>
-                    <span class="labelText">Execute</span>   <button id="executeJobCommand"><img src="/images/execute.png" alt="execute"/></button>  
+                    <span class="labelText">Execute</span>   
+                   <button id="executeJobCommand"><img src="/images/execute.png" alt="execute"/></button>  
                </div>
                  <div id="restore" style="width: 100%; height: 100%; display: none">
                    <span class="labelText">Options</span>

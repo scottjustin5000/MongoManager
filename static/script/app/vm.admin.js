@@ -5,9 +5,10 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
      loaded = false,
      mUserName = ko.observable(''),
      mPassword = ko.observable(''),
+    mConfirmPassword =  ko.observable(''),
      commands = ko.observableArray(['serverStatus', 'replSetGetStatus', 'dbStats', 'collStats']),
      selectedCommand = ko.observable('serverStatus'),
-     userCommands = ko.observableArray(['addUser', 'removeUser', 'selectUsers']),
+     userCommands = ko.observableArray(['addUser', 'removeUser', 'editUser']),
      selectedUserCommand = ko.observable('addUser'),
      dbCommands = ko.observableArray(['addDb', 'removeDb']),
      selectedDbCommand = ko.observable('addDb'),
@@ -26,7 +27,7 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
      userRoles = ko.observableArray(['read', 'readWrite', 'dbAdmin', 'userAdmin', 'clusterAdmin', 'readAnyDatabase', 'readWriteAnyDatabase', 'dbAdminAnyDatabase', 'userAdminAnyDatabase']),
      selectedRole = ko.observableArray([]),
      profiles = ko.observableArray([]),
-
+     userProfiles = ko.observableArray([])
      /*Global*/
 
      load = function () {
@@ -79,7 +80,7 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
              $('#executeAdditionalProfile').bind('click', function (e) {
                  addProfile();
              });
-
+             $('#passwordConfirm').keyup(validatePassword);
          }
      },
 
@@ -95,14 +96,14 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
 
      },
        serverTreeSelectionChange = function (evt) {
-         if (evt.type == "server") {
-             adminSelectedServer(evt.id);
-         }
-         else {
-             adminDb(evt.id);
-         }
+           if (evt.type == "server") {
+               adminSelectedServer(evt.id);
+           }
+           else {
+               adminDb(evt.id);
+           }
 
-     },
+       },
       displayPage = function () {
 
           var con = $("#adminTabscontent").find("div:visible");
@@ -126,7 +127,20 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
          selectedRole([]);
      },
      addUser = function () {
-
+         var dat;
+         if (profiles().length > 0) {
+             dat = ko.toJS(profiles);
+         }
+         else {
+             var rls = ko.toJS(selectedRole());
+             dat = [{ "username": mUserName(), "password": mPassword(), "server": adminSelectedServer(), "db": adminDb(), "roles": rls}];
+         }
+         dtx.postJson(route.commands.addUser, { data: dat },
+           function (r) {
+               mUserName('');
+               mPassword('');
+               profiles.removeAll();
+           });
      },
      addProfile = function () {
          if (mUserName().length > 0 && mPassword().length > 0 && adminSelectedServer().length > 1) {
@@ -141,8 +155,18 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
                  str += r + ',';
              });
              p.flatRoles = str.slice(0, -1);
-             console.log(p);
              profiles.push(p);
+         }
+     },
+     validatePassword = function () {
+        // console.log(mPassword() + " sp " + mConfirmPassword());
+         if (mPassword() != $("#passwordConfirm").val()) {
+
+             $("#validateStatus").text("passwords don't match");
+         }
+         else {
+             $("#validateStatus").text(" ");
+            
          }
      },
 
@@ -231,6 +255,8 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
          selectedRole: selectedRole,
          mUserName: mUserName,
          mPassword: mPassword,
-         profiles: profiles
+         mConfirmPassword : mConfirmPassword,
+         profiles: profiles,
+         userProfiles:userProfiles
      }
  });

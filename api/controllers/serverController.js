@@ -16,7 +16,6 @@ serverController.prototype = {
             if (err) {
                 res.send(500);
             }
-            //probably want to at least return server status... and server size
             var results = JSON.parse(data);
             var dd = "{ \"data\" :" + data + ",\"status\":\"success\"}";
             res.send(dd);
