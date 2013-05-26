@@ -85,6 +85,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
         $("#createCollection").bind('click', sendNewCollection);
 
         $('.queryButton').bind('click', controlPanelClick);
+       
     },
     controlPanelClick = function (e) {
         switch (e.currentTarget.id) {
@@ -322,7 +323,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
          jsonPreview: jsonPreview,
          stickPreview: stickPreview,
          newCollection: newCollection,
-         capCollection:capCollection,
+         capCollection: capCollection,
          load: load,
          hide: hide,
          show: show

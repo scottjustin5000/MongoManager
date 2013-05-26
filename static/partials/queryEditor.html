@@ -1,13 +1,12 @@
 <div id="queryEditor" data-bind="visible: visible" style="display: none">
 	<div class="editorControls" style="background: #bac8dc">
       <span class="labelText">Server:</span> <select data-bind="options:servers, value:selectedServer"></select>
-     <button class="queryButton" id="newQuery"><img src="/images/query.png" alt="new query"/></button>
-        <button class="queryButton" id="openQuery"><img src="/images/folder.png" alt="open query" /></button>
-        <button class="queryButton" id="saveQuery"><img src="/images/save.png" alt="save query" /> </button> 
-         <button class="queryButton" id="executeQuery"><img src="/images/execute.png" alt="execute query"/></button>    
-        <button class="queryButton" id="cancelQuery"><img src="/images/cancel.png" alt="cancel query"/></button>
-        <button class="queryButton" id="newcol"><img src="/images/newcol.png" alt="new collection"/></button>
-           <button class="queryButton" id="rename"><img src="/images/rename.png" alt="rename collection"/></button>
+     <button class="queryButton" id="newQuery"><img title="New Query" src="/images/query.png" alt="new query"/></button>
+        <button class="queryButton" id="openQuery"><img title="Open Query" src="/images/folder.png" alt="open query" /></button>
+        <button class="queryButton" id="saveQuery"><img title="Save Query" src="/images/save.png" alt="save query" /> </button> 
+         <button class="queryButton" id="executeQuery"><img title="Execute Query" src="/images/execute.png" alt="execute query"/></button>    
+        <button class="queryButton" id="cancelQuery"><img title="Cancel" src="/images/cancel.png" alt="cancel query"/></button>
+       <button class="queryButton" id="newcol"><img title="New Collection" src="/images/newcol.png" alt="new collection"/></button>
       <br />  
       <span class="labelText">&nbsp;</span>  <input type="text" placeholder="use db" data-bind="value: db"/>
     </div>

@@ -91,6 +91,25 @@ collectionController.prototype = {
             });
         });
     },
+    renameCollection: function (req, res) {
+        var data = req.body.data;
+        var server = data.server;
+        var namespace = data.namespace;
+        var oldName = data.oldName;
+        var newName = data.newName;
+        var droptarget =data.drop;
+         mongoClient.connect("mongodb://" + server + "/admin", function (err, db) {
+
+            db.command({ renameCollection: namespace+"."+oldName, to: namespace+"."+newName,dropTarget:droptarget }, function (err, dx) {
+                if (!err) {
+                    var results = { 'data': namespace+"."+newName, 'status': 'success' };
+                    res.send(results);
+                }
+            });
+
+        });
+
+    },
     deleteCollection: function (req, res) {
 
     }

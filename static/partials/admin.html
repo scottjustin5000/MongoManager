@@ -46,15 +46,27 @@
            <div class="adminTabpage" id="adminTabpage_2" style="height:100%">
                 <div id="userControls" style="display: none"></div>
                 <span class="labelText">Command:</span> <select data-bind="options:userCommands, value:selectedUserCommand"></select>
- 
+  
                <div class="adminJobContainer">
-                   <div id="addUSerContainer">
-                  <span class="labelText">User Name</span>   <input type="text" placeholder="user name"/><br />
-                   <span class="labelText">Password</span>   <input type="text" placeholder="password"/><br/>
-                     <div id="roleDiv"><span class="labelText">Roles</span> <select data-bind="options:userRoles, value:selectedRole"></select>
-                     <button id="executeUserCommand"><img src="/images/execute.png" alt="execute"/></button>  
-                     </div>
+                  <!--<div> </div>-->
+                   <div id="addUSerContainer" style="float: left">
+                       <span class="labelText">New Priviledge</span> <br/>
+                  <input data-bind="{value:mUserName}" type="text" placeholder="user name"/>
+                       <br /><input data-bind="{value:mPassword}" type="text" placeholder="password"/><br/>
                     </div>
+                     <div id="roleDiv" style="float: left">
+                          <span class="labelText">Roles</span>   <br />
+                         <select multiple="multiple" data-bind="options:userRoles, selectedOptions:selectedRole"></select>
+                         <button title="add additional profile" data-bind="enable: profiles().length > 0" id="executeAdditionalProfile"><img src="/images/add-icon.png" alt="execute"/></button>  
+                         <button title="commit all user profiles" id="executeUserCommand"><img src="/images/execute.png" alt="execute"/></button>  
+                     </div>
+                   <hr style="clear: both" data-bind="visible:profiles().length > 0"/>
+                   <div  id="savedProfile" data-bind="foreach: profiles">
+                      <span class="labelText">User:</span><input data-bind="{value:username}" type="text"/><br />
+                     <span class="labelText">Server:</span><input data-bind="{value:server}" type="text"/><br />
+                     <span class="labelText">Db:</span><input data-bind="{value:db}" type="text"/><br />
+                     <span class="labelText">Roles:</span><input data-bind="{value:flatRoles}" type="text"/>
+                   </div>
                </div>
            </div>
             <div class="adminTabpage" id="adminTabpage_3" style="height:100%">

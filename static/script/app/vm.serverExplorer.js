@@ -4,6 +4,7 @@ function ($, ko, route, message, dtx, pubsub) {
     loaded = false,
     serverCredentials = {},
     invalidated = true,
+    droptarget = false;
     load = function () {
         if (!loaded) {
             $('#serverConnection').bind('click', function (e) {
@@ -41,21 +42,51 @@ function ($, ko, route, message, dtx, pubsub) {
                                        var arr = n.attr("collection").split('.');
                                        return { db: arr[0], collection: arr[1], server: n.attr("server"), type: n.attr("type") };
                                }
-                               
+
 
                            }
                        }
                    },
-                   "plugins": ["themes", "json_data", "crrm", "ui"]
+                   "plugins": ["themes", "json_data", "crrm", "ui", "contextmenu"],
+                   "contextmenu": {
+                       "items": function ($node) {
+
+                           if ($node.attr("type") == "collection") {
+                               return {
+                                   "Rename": {
+                                       "label": "Rename",
+                                       "action": function (obj) {
+                                           this.rename(obj);
+                                           if (obj) {
+                                               droptarget = false;
+                                           }
+
+                                       }
+                                   },
+                                   "Rename w/ Drop Target": {
+                                       "label": "Rename w/ Drop Target",
+                                       "action": function (obj) {
+                                           this.rename(obj);
+                                           if (obj) {
+                                               droptarget = true;
+                                           }
+                                       }
+                                   }
+                               }
+                           }
+
+                       }
+
+                   }
                }).bind("select_node.jstree", function (e, data) {
-                  
-                 
+
+
                    switch (data.rslt.obj.attr("type")) {
                        case "server":
-                        pubsub.mediator.Publish(message.serverTree.objSelectionChanged, {"type":data.rslt.obj.attr("type"),"id" :data.rslt.obj.attr("id")});
+                           pubsub.mediator.Publish(message.serverTree.objSelectionChanged, { "type": data.rslt.obj.attr("type"), "id": data.rslt.obj.attr("id") });
                            break;
                        case "database":
-                        pubsub.mediator.Publish(message.serverTree.objSelectionChanged, {"type":data.rslt.obj.attr("type"),"id" :data.rslt.obj.attr("id")});
+                           pubsub.mediator.Publish(message.serverTree.objSelectionChanged, { "type": data.rslt.obj.attr("type"), "id": data.rslt.obj.attr("id") });
                            break;
                        case "collection":
 
@@ -63,22 +94,37 @@ function ($, ko, route, message, dtx, pubsub) {
                            var infArray = info.split('.');
                            currentCollection(infArray[1]);
 
-                           var reqData = { server: data.rslt.obj.attr("server"), db: infArray[0], collection: infArray[1] }; 
+                           var reqData = { server: data.rslt.obj.attr("server"), db: infArray[0], collection: infArray[1] };
                            var mouseX = data.rslt.e.pageX;
                            var mouseY = data.rslt.e.pageY;
-                           dtx.postJson(route.queries.collectionStats,reqData,
+                           dtx.postJson(route.queries.collectionStats, reqData,
                                function (r) {
                                    var text = JSON.stringify(r.data, null, 4);
                                    statPreview(text);
-                                  
-                               
-                                   $('#colStatsOverlay').css({ 'top': mouseY, 'left': mouseX+35 });
+
+
+                                   $('#colStatsOverlay').css({ 'top': mouseY, 'left': mouseX + 35 });
                                    $("#colStatsOverlay").show();
 
                                });
                            break;
 
                    }
+               }).bind("rename.jstree", function (e, data) {
+
+
+                   var serv = data.rslt.obj.attr("server");
+                   var id = data.rslt.obj.attr("id");
+                   var nn = data.rslt.new_name;
+                   var on = data.rslt.old_name;
+        
+                   var dat = { server: serv, namespace: id.split('.')[0],oldName:on, newName:nn, drop:droptarget };
+                   dtx.postJson(route.collection.renameCollection, { data: dat },
+                    function (r) {
+                        $(data.rslt.obj).attr("id", r.data);
+                    });
+                   
+
                });
            },
            function (err) {

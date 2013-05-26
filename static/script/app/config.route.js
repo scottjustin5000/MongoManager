@@ -4,14 +4,18 @@ function () {
         
         server:{
           allServers:"api/allServers", 
-          newServer:"api/newServer" 
+          newServer:"api/newServer"
+        },
+        collection:{
+            renameCollection:"api/renameCollection"
         },
         queries:{
           documentQuery:"api/documentQuery",
           replaceDocument:"api/replaceDocument",
           serverStats:"api/serverStats",
           dbStats:"api/dbStats",
-          collectionStats:"api/collectionStats"
+          collectionStats:"api/collectionStats",
+          replSetGetStatus:"api/replSetGetStatus"
         },
         commands: {
            createCollection:"api/createCollection",

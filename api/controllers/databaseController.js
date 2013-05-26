@@ -45,9 +45,7 @@ databaseController.prototype = {
 
             db.command({ dbStats: dbName }, function (err, dx) {
                 if (!err) {
-                    // console.log(dx);
                     var results = { 'data': dx, 'status': 'success' };
-                   // console.log(results);
                     res.send(results);
                 }
             });

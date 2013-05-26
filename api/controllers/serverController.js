@@ -62,6 +62,20 @@ serverController.prototype = {
             }
         });
     },
+    replSetGetStatus: function (req, res) {
+        var serverName = req.body.server;
+           mongoClient.connect("mongodb://" + serverName + "/admin", function (err, db) {
+
+            db.command({ replSetGetStatus: 1 }, function (err, dx) {
+                if (!err) {
+                    console.log(dx);
+                    var results = { 'data': dx, 'status': 'success' };
+                    res.send(results);
+                }
+            });
+
+        });
+    },
     getCollections: function (dbName) {
 
     },

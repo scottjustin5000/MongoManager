@@ -1,8 +1,10 @@
-define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messages', 'pubsub'],
- function ($, ko, route, dtx, message, pubsub) {
+define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messages', 'pubsub', 'model.userProfile'],
+ function ($, ko, route, dtx, message, pubsub, UserProfile) {
 
      var 
      loaded = false,
+     mUserName = ko.observable(''),
+     mPassword = ko.observable(''),
      commands = ko.observableArray(['serverStatus', 'replSetGetStatus', 'dbStats', 'collStats']),
      selectedCommand = ko.observable('serverStatus'),
      userCommands = ko.observableArray(['addUser', 'removeUser', 'selectUsers']),
@@ -21,8 +23,12 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
      adminDb = ko.observable(''),
      adminCol = ko.observable(''),
      adminResult = ko.observable(''),
-     userRoles = ko.observableArray(['read','readWrite','dbAdmin','userAdmin']),
-     selectedRole = ko.observable(''),
+     userRoles = ko.observableArray(['read', 'readWrite', 'dbAdmin', 'userAdmin', 'clusterAdmin', 'readAnyDatabase', 'readWriteAnyDatabase', 'dbAdminAnyDatabase', 'userAdminAnyDatabase']),
+     selectedRole = ko.observableArray([]),
+     profiles = ko.observableArray([]),
+
+     /*Global*/
+
      load = function () {
          if (!loaded) {
 
@@ -57,13 +63,26 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
                          execDbStats();
                          break;
                      case "replSetGetStatus":
+                         execReplSetGetStatus();
+                         break;
+                     case "collStats":
+                         //show div that instructs user to 
+                         // click on collection in tree
                          break;
                  }
 
              });
 
+             $('#executeUserCommand').bind('click', function (e) {
+                 addUser();
+             });
+             $('#executeAdditionalProfile').bind('click', function (e) {
+                 addProfile();
+             });
+
          }
      },
+
      show = function () {
          $('#adminEditor').show();
          pubsub.mediator.Subscribe(message.serverTree.objSelectionChanged, serverTreeSelectionChange);
@@ -75,6 +94,59 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
          pubsub.mediator.Remove(message.serverTree.objSelectionChanged);
 
      },
+       serverTreeSelectionChange = function (evt) {
+         if (evt.type == "server") {
+             adminSelectedServer(evt.id);
+         }
+         else {
+             adminDb(evt.id);
+         }
+
+     },
+      displayPage = function () {
+
+          var con = $("#adminTabscontent").find("div:visible");
+          var current = con[0].id.split("_")[1];
+
+          document.getElementById("adminTabHeader_" + current).removeAttribute("class");
+          document.getElementById("adminTabpage_" + current).style.display = "none";
+
+
+          var ident = this.id.split("_")[1];
+
+          this.setAttribute("class", "tabActiveHeader");
+          document.getElementById("adminTabpage_" + ident).style.display = "block";
+          this.parentNode.setAttribute("data-current", ident);
+      },
+
+     /*USER*/
+
+     removeSelected = function () {
+         userRoles.removeAll(selectedRole());
+         selectedRole([]);
+     },
+     addUser = function () {
+
+     },
+     addProfile = function () {
+         if (mUserName().length > 0 && mPassword().length > 0 && adminSelectedServer().length > 1) {
+             var p = new UserProfile();
+             p.username = mUserName();
+             p.password = mPassword();
+             p.server = adminSelectedServer();
+             p.db = adminDb();
+             var str = '';
+             ko.utils.arrayForEach(selectedRole(), function (r) {
+                 p.roles.push(r);
+                 str += r + ',';
+             });
+             p.flatRoles = str.slice(0, -1);
+             console.log(p);
+             profiles.push(p);
+         }
+     },
+
+     /*OVERVIEW*/
     execServerStatus = function () {
         if (adminSelectedServer().length > 1) {
             var query = { 'serverName': adminSelectedServer() };
@@ -106,40 +178,33 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
             alert("server and db selection required");
         }
     },
-    execCollStats = function () {
-        var query = { 'server': adminSelectedServer(), 'db': adminDb(), 'collection': adminCol() };
-        dtx.postJson(route.queries.collectionStats, query,
-           function (r) {
-               var data2 = JSON.stringify(r.data, null, 4);
+    execReplSetGetStatus = function () {
 
+        if (adminSelectedServer().length > 1) {
+            var query = { 'server': adminSelectedServer() };
+            dtx.postJson(route.queries.replSetGetStatus, query,
+           function (r) {
+
+               var data2 = JSON.stringify(r.data, null, 4);
                adminResult(data2);
 
            });
-    },
-     serverTreeSelectionChange = function (evt) {
-         if (evt.type == "server") {
-             adminSelectedServer(evt.id);
-         }
-         else {
-             adminDb(evt.id);
-         }
+        }
+        else {
+            alert("server and db selection required");
+        }
+    };
+     /*execCollStats = function () {
+     var query = { 'server': adminSelectedServer(), 'db': adminDb(), 'collection': adminCol() };
+     dtx.postJson(route.queries.collectionStats, query,
+     function (r) {
+     var data2 = JSON.stringify(r.data, null, 4);
 
-     },
-      displayPage = function () {
+     adminResult(data2);
 
-          var con = $("#adminTabscontent").find("div:visible");
-          var current = con[0].id.split("_")[1];
+     });
+     },*/
 
-          document.getElementById("adminTabHeader_" + current).removeAttribute("class");
-          document.getElementById("adminTabpage_" + current).style.display = "none";
-
-
-          var ident = this.id.split("_")[1];
-
-          this.setAttribute("class", "tabActiveHeader");
-          document.getElementById("adminTabpage_" + ident).style.display = "block";
-          this.parentNode.setAttribute("data-current", ident);
-      };
      return {
          load: load,
          show: show,
@@ -162,7 +227,10 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
          selectedJobCommand: selectedJobCommand,
          userCommands: userCommands,
          selectedUserCommand: selectedUserCommand,
-         userRoles:userRoles,
-         selectedRole:selectedRole
+         userRoles: userRoles,
+         selectedRole: selectedRole,
+         mUserName: mUserName,
+         mPassword: mPassword,
+         profiles: profiles
      }
  });
