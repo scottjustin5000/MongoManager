@@ -72,19 +72,14 @@
                       </p>
                    </div>
                    </div>
+                      <div id="modifyUser" style="display: none">
+                   <span class="labelText">Load Users:</span> <button id="loadUser"><img src="/images/refresh.png" alt="Load Users"/></button>
+                <select style="min-width: 200px" multiple="multiple" data-bind="options:dbUsers, selectedOptions:selectedDbUsers"></select>
+                  <button>delete</button>        
+                     
                </div>
-               <div id="modifyUser" style="display: none">
-                <div  id="savedProfile" data-bind="foreach: userProfiles">
-                      <p>
-                      <span class="labelText">User:</span><input data-bind="{value:username}" type="text"/><br />
-                     <span class="labelText">Server:</span><input data-bind="{value:server}" type="text"/><br />
-                     <span class="labelText">Db:</span><input data-bind="{value:db}" type="text"/><br />
-                     <span class="labelText">Roles:</span><input data-bind="{value:flatRoles}" type="text"/>
-                      <br />
-                          <button>Edit</button><button>delete</button>
-                      </p>
-                   </div>
                </div>
+            
            </div>
             <div class="adminTabpage" id="adminTabpage_3" style="height:100%">
                 <div id="dbControls" style="display: none"></div>

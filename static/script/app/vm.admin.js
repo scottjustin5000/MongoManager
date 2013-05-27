@@ -5,10 +5,10 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
      loaded = false,
      mUserName = ko.observable(''),
      mPassword = ko.observable(''),
-    mConfirmPassword =  ko.observable(''),
+    mConfirmPassword = ko.observable(''),
      commands = ko.observableArray(['serverStatus', 'replSetGetStatus', 'dbStats', 'collStats']),
      selectedCommand = ko.observable('serverStatus'),
-     userCommands = ko.observableArray(['addUser', 'removeUser', 'editUser']),
+     userCommands = ko.observableArray(['addUser', 'removeUser']),
      selectedUserCommand = ko.observable('addUser'),
      dbCommands = ko.observableArray(['addDb', 'removeDb']),
      selectedDbCommand = ko.observable('addDb'),
@@ -27,7 +27,8 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
      userRoles = ko.observableArray(['read', 'readWrite', 'dbAdmin', 'userAdmin', 'clusterAdmin', 'readAnyDatabase', 'readWriteAnyDatabase', 'dbAdminAnyDatabase', 'userAdminAnyDatabase']),
      selectedRole = ko.observableArray([]),
      profiles = ko.observableArray([]),
-     userProfiles = ko.observableArray([])
+     dbUsers = ko.observableArray([]),
+     selectedDbUsers = ko.observableArray([])
      /*Global*/
 
      load = function () {
@@ -81,6 +82,7 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
                  addProfile();
              });
              $('#passwordConfirm').keyup(validatePassword);
+             $('#loadUser').bind('click', loadUsers);
          }
      },
 
@@ -121,7 +123,21 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
       },
 
      /*USER*/
-
+     loadUsers = function (e) {
+         if (adminSelectedServer().length > 0 && adminDb().length > 0) {
+             var dat = { "server": adminSelectedServer(), "db": adminDb() };
+             dbUsers.removeAll();
+             dtx.postJson(route.commands.loadUsers, { data: dat },
+           function (r) {
+               for (var i = 0; i < r.data.length; i++) {
+                   dbUsers.push(r.data[i]);
+               }
+           });
+         }
+         else {
+             alert("server and db selection required");
+         }
+     },
      removeSelected = function () {
          userRoles.removeAll(selectedRole());
          selectedRole([]);
@@ -159,16 +175,30 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
          }
      },
      validatePassword = function () {
-        // console.log(mPassword() + " sp " + mConfirmPassword());
          if (mPassword() != $("#passwordConfirm").val()) {
 
              $("#validateStatus").text("passwords don't match");
          }
          else {
              $("#validateStatus").text(" ");
-            
+
          }
      },
+     selectedUserCommand.subscribe(function (newValue) {
+         if (newValue == "addUser") {
+
+             $("#modifyUser").hide();
+             $("#adduser").show();
+
+         }
+         else {
+             if (dbUsers().length == 0 && adminSelectedServer().length > 0 && adminDb().length > 0) {
+                 loadUsers(null);
+             }
+             $("#adduser").hide();
+             $("#modifyUser").show();
+         }
+     }),
 
      /*OVERVIEW*/
     execServerStatus = function () {
@@ -255,8 +285,9 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
          selectedRole: selectedRole,
          mUserName: mUserName,
          mPassword: mPassword,
-         mConfirmPassword : mConfirmPassword,
+         mConfirmPassword: mConfirmPassword,
          profiles: profiles,
-         userProfiles:userProfiles
+         dbUsers: dbUsers,
+         selectedDbUsers: selectedDbUsers
      }
  });

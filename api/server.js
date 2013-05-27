@@ -61,6 +61,10 @@ app.post('/createCollection', function (req, res) {
        var cnt = new collectionController();
     cnt.createCollection(req, res);
 });
+app.post('/renameCollection', function (req, res) {
+    var cc = new collectionController();
+    cc.renameCollection(req,res);
+});
 app.post('/replaceDocument', function (req, res) {
        var q = new query();
     q.executeReplace(req, res);
@@ -69,8 +73,17 @@ app.post('/addUser', function (req, res) {
     var uc = new userController();
     uc.addUser(req, res);
 });
-app.post('/renameCollection', function (req, res) {
-    var cc = new collectionController();
-    cc.renameCollection(req,res);
+app.post('/loadUsers', function (req, res) {
+    var uc = new userController();
+    uc.loadUsers(req, res);
 });
+app.post('/removeUser', function (req, res) {
+    var uc = new userController();
+    uc.removeUser(req, res);
+});
+app.post('/editUser', function (req, res) {
+    var uc = new userController();
+    uc.editUser(req, res);
+});
+
 

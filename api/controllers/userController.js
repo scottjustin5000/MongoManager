@@ -6,31 +6,6 @@ function userController(){
 }
 userController.prototype = {
 
-    /* addUser: function (req, res) {
-    var data = req.body.query;
-    var serverName = data.serverName;
-    var user = data.user;
-    var pw = data.password;
-    var opts = data.options;
-
-    mongoClient.connect("mongodb://" + serverName + "/admin",
-    function (err, db) {
-    if (err) {
-    console.log(err);
-    }
-    else {
-    var admin = db.admin();
-    admin.addUser(user, pw, opts,function (err, results) {
-    if (!err) {
-    var dd = {'status': 'success' };
-    res.send(dd);
-    }
-
-    });
-    }
-    });
-    }*/
-
     addUser: function (req, res) {
 
         var dataArray = req.body.data;
@@ -40,7 +15,7 @@ userController.prototype = {
         function (err, db) {
             if (!err) {
                 db.addUser(d.username, d.password, d.roles, function (err, res) {
-                    callback(null,d);
+                    callback(null, d);
                 });
             }
             else {
@@ -49,15 +24,38 @@ userController.prototype = {
         });
         });
 
-        async.series(calls, function(err, result) {
-        if (err){
-           return console.log(err);
-        }
-          var result = {'status': 'success' };
-          res.send(result);
-      });
-      
+        async.series(calls, function (err, result) {
+            if (err) {
+                return console.log(err);
+            }
+            var result = { 'status': 'success' };
+            res.send(result);
+        });
+    },
+    loadUsers: function (req, res) {
+        var serverName = req.body.data.server;
+        var dbName = req.body.data.db;
+        var userCollection = [];
+        mongoClient.connect("mongodb://" + serverName + "/" + dbName, function (err, db) {
 
-   }
+            var col = db.collection("system.users");
+
+            col.find().toArray(function (err, users) {
+       
+                for (var i= 0; i <users.length; i++) {
+                    userCollection.push(users[i].user);
+                }
+                var results = { "data": userCollection, "status": "success" };
+                res.send(results);
+
+            });
+        });
+    },
+    editUser: function (req, res) {
+
+    },
+    removeUser: function (req, res) {
+
+    }
 };
 module.exports = userController;

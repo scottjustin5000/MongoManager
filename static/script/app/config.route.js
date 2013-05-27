@@ -19,7 +19,8 @@ function () {
         },
         commands: {
            createCollection:"api/createCollection",
-           addUser:"api/addUser" 
+           addUser:"api/addUser",
+           loadUsers: "api/loadUsers"
         }
 
     };
