@@ -28,13 +28,26 @@ module.exports = function () {
         var matcher = query.match("\\((.*)\\)");
 
         var body = matcher[1];
-        if (query.indexOf(".findOne") !== -1) {
 
-            q.query = "function(res,db){var col = db.collection('" + collection + "'); col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '"+ collection+"', 'data': JSON.stringify(doc), 'status': 'success' }; res.send(result) });}";
+       
+        if (query.indexOf(".findOne") !== -1) {
+            if(body.indexOf("ObjectId")!==-1){
+                
+                  q.query = "function(res,db){var col = db.collection('" + collection + "');  var ObjectId = db.bson_serializer.ObjectID; col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '"+ collection+"', 'data': JSON.stringify(doc), 'status': 'success' }; res.send(result) });}";
+            }
+            else{
+                 q.query = "function(res,db){var col = db.collection('" + collection + "'); col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '"+ collection+"', 'data': JSON.stringify(doc), 'status': 'success' }; res.send(result) });}";
+            }
+           
         }
         else {
-
-            q.query = "function(res,db){var col = db.collection('" + collection + "'); col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '"+ collection+"', 'data': JSON.stringify(doc), 'status': 'success' };res.send(dd);});}";
+            if(body.indexOf("ObjectId")!==-1){
+                 q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '"+ collection+"', 'data': JSON.stringify(doc), 'status': 'success' };res.send(dd);});}";
+            }
+            else{
+                 q.query = "function(res,db){var col = db.collection('" + collection + "'); col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '"+ collection+"', 'data': JSON.stringify(doc), 'status': 'success' };res.send(dd);});}";
+            }
+           
         }
         return q;
 

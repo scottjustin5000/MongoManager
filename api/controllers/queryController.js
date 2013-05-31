@@ -19,13 +19,14 @@ queryController.prototype = {
             var parsed = queryParser.parse(data.queryText);
             var q = parsed.query;
             var obj = {};
+            console.log(q);
             obj = objectUtility.builder(obj, { "execCommand": q });
             obj.execCommand(res, db);
-
+            
             // db.close();
         });
     },
-    
+
     executeReplace: function (req, res) {
 
         var datum = req.body.cmd;
