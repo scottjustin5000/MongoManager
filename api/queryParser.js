@@ -4,7 +4,7 @@ module.exports = function () {
 
     var 
     keyword = ['findOne', 'find', 'count'],
-    parse = function (query) {
+    parseSelect = function (query) {
 
         if (query.indexOf('.count')!==-1) {
             return parseCountQuery(query);
@@ -18,6 +18,25 @@ module.exports = function () {
     },
     parseManagementQuery = function(query){
         
+    },
+    parseRemove =function(query){
+        var collection = query.substring(0, query.indexOf('.remove')).replace('db.', '');
+
+        var q = new queryData();
+        q.collection = collection;
+        var matcher = query.match("\\((.*)\\)");
+
+        var body = matcher[1];
+
+          if(body.indexOf("ObjectId")!==-1){
+                 q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success' };res.send(dd);});}";
+            }
+            else{
+                 q.query = "function(res,db){var col = db.collection('" + collection + "'); col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success' };res.send(dd);});}";
+            }
+           
+
+        return q;
     },
     parseFindQuery = function (query) {
 
@@ -53,7 +72,8 @@ module.exports = function () {
 
     };
     return {
-        parse: parse
+        parseSelect: parseSelect,
+        parseRemove:parseRemove
     }
 
 

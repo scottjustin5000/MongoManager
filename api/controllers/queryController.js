@@ -16,7 +16,24 @@ queryController.prototype = {
         mongoClient.connect("mongodb://" + serverName + "/" + dbName,
         function (err, db) {
 
-            var parsed = queryParser.parse(data.queryText);
+            var parsed = queryParser.parseSelect(data.queryText);
+            var q = parsed.query;
+            var obj = {};
+           
+            obj = objectUtility.builder(obj, { "execCommand": q });
+            obj.execCommand(res, db);
+            
+            // db.close();
+        });
+    },
+    executeRemove:function(req,res){
+        var data = req.body.query;
+        var serverName = data.serverName;
+        var dbName = data.db;
+        mongoClient.connect("mongodb://" + serverName + "/" + dbName,
+        function (err, db) {
+
+            var parsed = queryParser.parseRemove(data.queryText);
             var q = parsed.query;
             var obj = {};
             console.log(q);
@@ -26,7 +43,6 @@ queryController.prototype = {
             // db.close();
         });
     },
-
     executeReplace: function (req, res) {
 
         var datum = req.body.cmd;

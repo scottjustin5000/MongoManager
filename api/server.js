@@ -41,6 +41,10 @@ app.post('/documentQuery', function (req, res) {
     var q = new query();
     q.executeSelect(req, res);
 });
+app.post('/remove', function (req, res) {
+      var q = new query();
+    q.executeRemove(req, res);
+});
 app.post('/serverStats', function (req, res) {
     var sc = new serverController();
     sc.getServerStatus(req, res);

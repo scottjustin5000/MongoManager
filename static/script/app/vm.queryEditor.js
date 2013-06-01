@@ -85,7 +85,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
         $("#createCollection").bind('click', sendNewCollection);
 
         $('.queryButton').bind('click', controlPanelClick);
-       
+
     },
     controlPanelClick = function (e) {
         switch (e.currentTarget.id) {
@@ -192,27 +192,40 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             var con = $("#tabscontent").find("div:visible");
             var index = con[0].id.split("_")[1];
             var editor = ace.edit("code_" + index);
-            var query = editor.getValue();
+            var queryText = editor.getValue();
             var server = selectedServer();
 
             var datab = db();
-            var query = { 'serverName': server, 'db': datab, 'queryText': query };
+            var query = { 'serverName': server, 'db': datab, 'queryText': queryText };
 
             documentResults.removeAll();
+            if (queryText.indexOf('.remove(') === -1) {
+                dtx.postJson(route.queries.documentQuery, { query: query },
+                  function (r) {
 
-            dtx.postJson(route.queries.documentQuery, { query: query },
-           function (r) {
+                      var data = JSON.parse(r.data);
 
-               var data = JSON.parse(r.data);
+                      currentCollection(r.collection);
+                      for (var j = 0; j < data.length; j++) {
+                          dr = { "id": data[j]._id, "properties": data[j], "editable": true };
+                          documentResults.push(dr);
+                      }
+                      $("#documentPanel").show();
+                      pubsub.mediator.Publish(message.data.cacheCollection, data);
+                  });
+            }
+            else {
+                dtx.postJson(route.queries.remove, { query: query },
+                    function (r) {
 
-               currentCollection(r.collection);
-               for (var j = 0; j < data.length; j++) {
-                   dr = { "id": data[j]._id, "properties": data[j], "editable": true };
-                   documentResults.push(dr);
-               }
-               $("#documentPanel").show();
-               pubsub.mediator.Publish(message.data.cacheCollection, data);
-           });
+                        //var data = JSON.parse(r.data);
+                      
+        
+                        $("#documentPanel").show();
+
+                    });
+            }
+
         }
         else {
             alert("server and db required");
