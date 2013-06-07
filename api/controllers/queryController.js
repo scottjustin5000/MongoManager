@@ -39,8 +39,22 @@ queryController.prototype = {
             console.log(q);
             obj = objectUtility.builder(obj, { "execCommand": q });
             obj.execCommand(res, db);
+
+        });
+    },
+    executeUpdate:function(req, res){
+        var data = req.body.query;
+        var serverName = data.serverName;
+        var dbName = data.db;
+        mongoClient.connect("mongodb://" + serverName + "/" + dbName,
+        function (err, db) {
+
+            var parsed = queryParser.parseUpdate(data.queryText);
+            var q = parsed.query;
+            var obj = {};
+            obj = objectUtility.builder(obj, { "execCommand": q });
+            obj.execCommand(res, db);
             
-            // db.close();
         });
     },
     executeReplace: function (req, res) {

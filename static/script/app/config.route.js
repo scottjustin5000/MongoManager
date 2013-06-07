@@ -12,6 +12,7 @@ function () {
         queries:{
           documentQuery:"api/documentQuery",
           remove:"api/remove",
+          update:"api/update",
           replaceDocument:"api/replaceDocument",
           serverStats:"api/serverStats",
           dbStats:"api/dbStats",

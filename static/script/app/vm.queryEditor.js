@@ -199,8 +199,38 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             var query = { 'serverName': server, 'db': datab, 'queryText': queryText };
 
             documentResults.removeAll();
-            if (queryText.indexOf('.remove(') === -1) {
-                dtx.postJson(route.queries.documentQuery, { query: query },
+
+            processMongoQuery(query, queryText);
+        }
+        else {
+            alert("server and db required");
+        }
+
+    },
+    processMongoQuery = function (query, queryText) {
+        //todo: clean up this garbage
+        var j = queryText.indexOf('.remove(');
+        console.log(j);
+        if (queryText.indexOf('.remove(') !== -1) {
+            console.log('remove');
+           dtx.postJson(route.queries.remove, { query: query },
+            function (r) {
+
+            $("#documentPanel").show();
+
+            });
+        }
+        else if (queryText.indexOf('.update(') != -1) {
+            console.log('update');
+            dtx.postJson(route.queries.update, { query: query },
+            function (r) {
+
+            $("#documentPanel").show();
+
+            });
+        }
+        else {
+            dtx.postJson(route.queries.documentQuery, { query: query },
                   function (r) {
 
                       var data = JSON.parse(r.data);
@@ -213,23 +243,9 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
                       $("#documentPanel").show();
                       pubsub.mediator.Publish(message.data.cacheCollection, data);
                   });
-            }
-            else {
-                dtx.postJson(route.queries.remove, { query: query },
-                    function (r) {
-
-                        //var data = JSON.parse(r.data);
-                      
-        
-                        $("#documentPanel").show();
-
-                    });
-            }
-
         }
-        else {
-            alert("server and db required");
-        }
+    },
+    processSqlQuery = function (queryText) {
 
     },
     documentSelected = function (data, event) {
