@@ -1,6 +1,6 @@
 define('vm.documentEditor', ['jquery', 'ko', 'config.route',
-'config.messages', 'datacontext', 'pubsub', 'collectionCache'],
- function ($, ko, route, message, dtx, pubsub, cache) {
+'config.messages', 'datacontext', 'pubsub', 'collectionCache', 'base64'],
+ function ($, ko, route, message, dtx, pubsub, cache, base64) {
 
      var 
      selectedValue = ko.observable('json'),
@@ -36,7 +36,7 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
          if (!loaded) {
              load();
          }
-         var obj = eobj.split("~~");
+         var obj = base64.fromBase64(eobj).split("~~");
          var id = obj[0];
          currentCollection = obj[1];
          server = obj[2];

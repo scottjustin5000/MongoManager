@@ -587,4 +587,4 @@ and slimmed down to meet my specific needs.
     exports.CondLexer = CondLexer;
     exports.CondParser = CondParser;
 
-}(typeof exports === "undefined" ? (this.simpleSqlParser = {}) : exports));
+}(typeof exports === "undefined" ? (this.sqlParser = {}) : exports));

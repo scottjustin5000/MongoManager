@@ -80,13 +80,31 @@ collectionController.prototype = {
 
             db.createCollection(collection, options, function (err, info) {
                 if (err) {
-                    console.log(err);
                     res.send("{\"status\":\"error\"}");
                 }
                 else {
                     res.send("{\"status\":\"success\"}");
                 }
 
+
+            });
+        });
+    },
+    createCollection2:function(req,res){
+        var serverName = req.body.server;
+        var dbName = req.body.db;
+        var body = req.body.query;
+        var matcher = body.match("\\((.*)\\)");
+        var cmd= matcher[1];
+        mongoClient.connect("mongodb://" + serverName + "/" + dbName, function (err, db) {
+
+            db.createCollection(cmd, function (err, info) {
+                if (err) {
+                    res.send("{\"status\":\"error\"}");
+                }
+                else {
+                    res.send("{\"status\":\"success\"}");
+                }
 
             });
         });

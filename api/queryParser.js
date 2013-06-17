@@ -28,10 +28,10 @@ module.exports = function () {
         var body = getBody(query);
 
         if (body.indexOf("ObjectId") !== -1) {
-            q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success' };res.send(dd);});}";
+            q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success', 'cmd':'remove' };res.send(dd);});}";
         }
         else {
-            q.query = "function(res,db){var col = db.collection('" + collection + "'); col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success' };res.send(dd);});}";
+            q.query = "function(res,db){var col = db.collection('" + collection + "'); col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'remove' };res.send(dd);});}";
         }
 
 
@@ -40,37 +40,71 @@ module.exports = function () {
     parseFindQuery = function (query) {
 
         var collection = getCollection(query, '.find');
-        // query.substring(0, query.indexOf('.find')).replace('db.', '');
 
         var q = new queryData();
         q.collection = collection;
-        //var matcher = query.match("\\((.*)\\)");
-        //matcher[1];
+
         var body = getBody(query);
 
         if (query.indexOf(".findOne") !== -1) {
             if (body.indexOf("ObjectId") !== -1) {
-                q.query = "function(res,db){var col = db.collection('" + collection + "');  var ObjectId = db.bson_serializer.ObjectID; col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success' }; res.send(result) });}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "');  var ObjectId = db.bson_serializer.ObjectID; col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success','cmd':'find' }; res.send(result) });}";
             }
             else {
-                q.query = "function(res,db){var col = db.collection('" + collection + "'); col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success' }; res.send(result) });}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "'); col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'find' }; res.send(result) });}";
             }
 
         }
         else {
             if (body.indexOf("ObjectId") !== -1) {
-                q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success' };res.send(dd);});}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'find' };res.send(dd);});}";
             }
             else {
-                q.query = "function(res,db){var col = db.collection('" + collection + "'); col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success' };res.send(dd);});}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "'); col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'find' };res.send(dd);});}";
             }
 
         }
         return q;
 
     },
+     parseFindAndModify = function (query) {
+
+         var collection = getCollection(query, '.findAndModify');
+         var q = new queryData();
+         q.collection = collection;
+
+         var body = getBody(query);
+         var obj = eval("(" + body + ')');
+
+         if (body.indexOf("ObjectId") !== -1) {
+             q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.findAndModify(" + JSON.stringify(obj.query) + "," + JSON.stringify(obj.sort) + "," + JSON.stringify(obj.update) + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'findAndModify' };res.send(dd);});}";
+         }
+         else {
+             q.query = "function(res,db){var col = db.collection('" + collection + "'); col.findAndModify(" + JSON.stringify(obj.query) + "," + JSON.stringify(obj.sort) + "," + JSON.stringify(obj.update) + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success','cmd':'findAndModify' };res.send(dd);});}";
+         }
+         console.log(q.query);
+         return q;
+
+     },
      parseUpdate = function (query) {
-        var collection = getCollection(query, '.update');
+         var collection = getCollection(query, '.update');
+
+         var q = new queryData();
+         q.collection = collection;
+
+         var body = getBody(query);
+
+         if (body.indexOf("ObjectId") !== -1) {
+             q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.update(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'update' };res.send(dd);});}";
+         }
+         else {
+             q.query = "function(res,db){var col = db.collection('" + collection + "'); col.update(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success', 'cmd':'update' };res.send(dd);});}";
+         }
+         return q;
+     },
+    parseInsert = function (query) {
+
+        var collection = getCollection(query, '.insert');
 
         var q = new queryData();
         q.collection = collection;
@@ -78,10 +112,10 @@ module.exports = function () {
         var body = getBody(query);
 
         if (body.indexOf("ObjectId") !== -1) {
-            q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success' };res.send(dd);});}";
+            q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.insert(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'create' };res.send(dd);});}";
         }
         else {
-            q.query = "function(res,db){var col = db.collection('" + collection + "'); col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success' };res.send(dd);});}";
+            q.query = "function(res,db){var col = db.collection('" + collection + "'); col.insert(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'create' };res.send(dd);});}";
         }
 
 
@@ -98,7 +132,9 @@ module.exports = function () {
     return {
         parseSelect: parseSelect,
         parseRemove: parseRemove,
-        parseUpdate:parseUpdate
+        parseUpdate: parseUpdate,
+        parseInsert: parseInsert,
+        parseFindAndModify: parseFindAndModify
     }
 
 

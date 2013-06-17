@@ -1,5 +1,5 @@
-define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'datacontext', 'pubsub', 'ace'],
- function ($, ko, route, message, dtx, pubsub, ace) {
+define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'datacontext', 'pubsub', 'ace', 'toastr', 'base64'],
+ function ($, ko, route, message, dtx, pubsub, ace, toastr,base64) {
      var 
     visible = ko.observable(true),
     loaded = false,
@@ -19,6 +19,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     collectionSize = ko.observable(''),
     collectionMax = ko.observable(''),
     tabCount = 1,
+    queryLanguage = ko.observable('mongo'),
     capCollection = ko.observable(false),
      show = function () {
          visible(true);
@@ -199,8 +200,13 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             var query = { 'serverName': server, 'db': datab, 'queryText': queryText };
 
             documentResults.removeAll();
+            if (queryLanguage() == 'mongo') {
+                processMongoQuery(query, queryText);
+            }
+            else {
+                processSqlQuery(query, queryText);
+            }
 
-            processMongoQuery(query, queryText);
         }
         else {
             alert("server and db required");
@@ -209,48 +215,58 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     },
     processMongoQuery = function (query, queryText) {
         //todo: clean up this garbage
-        var j = queryText.indexOf('.remove(');
-        console.log(j);
-        if (queryText.indexOf('.remove(') !== -1) {
-            console.log('remove');
-           dtx.postJson(route.queries.remove, { query: query },
-            function (r) {
-
-            $("#documentPanel").show();
-
-            });
+        //add error handling and feedback
+  
+        if (queryText.indexOf('.createCollection(') !== -1) {
+            toastr.error('Not supported in query editor. Use the create new collection button', 'Error')
         }
-        else if (queryText.indexOf('.update(') != -1) {
-            console.log('update');
-            dtx.postJson(route.queries.update, { query: query },
-            function (r) {
-
-            $("#documentPanel").show();
-
-            });
-        }
-        else {
-            dtx.postJson(route.queries.documentQuery, { query: query },
+        else{
+              dtx.postJson(route.queries.documentQuery, { query: query },
                   function (r) {
 
-                      var data = JSON.parse(r.data);
+                      if(r.cmd==='find'){
+                          var data = JSON.parse(r.data);
 
-                      currentCollection(r.collection);
-                      for (var j = 0; j < data.length; j++) {
-                          dr = { "id": data[j]._id, "properties": data[j], "editable": true };
-                          documentResults.push(dr);
+                            currentCollection(r.collection);
+                            for (var j = 0; j < data.length; j++) {
+                                dr = { "id": data[j]._id, "properties": data[j], "editable": true };
+                                documentResults.push(dr);
+                            }
+                            $("#documentPanel").show();
+                            pubsub.mediator.Publish(message.data.cacheCollection, data);
                       }
-                      $("#documentPanel").show();
-                      pubsub.mediator.Publish(message.data.cacheCollection, data);
-                  });
-        }
+                      else{
+                            toastr.success(r.cmd+" Complete!");
+                      }
+                    });
+                    
+                }
     },
-    processSqlQuery = function (queryText) {
+    processSqlQuery = function (query,queryText) {
+        
+        dtx.postJson(route.queries.sqlQuery, { query: query },
+                  function (r) {
 
+                      if(r.cmd==='find'){
+                          var data = JSON.parse(r.data);
+
+                            currentCollection(r.collection);
+                            for (var j = 0; j < data.length; j++) {
+                                dr = { "id": data[j]._id, "properties": data[j], "editable": true };
+                                documentResults.push(dr);
+                            }
+                            $("#documentPanel").show();
+                            pubsub.mediator.Publish(message.data.cacheCollection, data);
+                      }
+                      else{
+                            toastr.success(r.cmd+" Complete!");
+                      }
+                    });
     },
     documentSelected = function (data, event) {
         var obj = data.properties._id + "~~" + currentCollection() + "~~" + selectedServer() + "~~" + db();
-        pubsub.mediator.Publish(message.navigation.selectionChanged, 'documentDetail', obj);
+       
+        pubsub.mediator.Publish(message.navigation.selectionChanged, 'documentDetail', base64.toBase64(obj));
     },
     serverTreeSelectionChange = function (evt) {
         if (evt.type == "server") {
@@ -349,6 +365,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
          stickPreview: stickPreview,
          newCollection: newCollection,
          capCollection: capCollection,
+         queryLanguage: queryLanguage,
          load: load,
          hide: hide,
          show: show

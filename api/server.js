@@ -39,15 +39,11 @@ app.post('/expandNavigation', function (req, res) {
 });
 app.post('/documentQuery', function (req, res) {
     var q = new query();
-    q.executeSelect(req, res);
+    q.executeMongo(req, res);
 });
-app.post('/remove', function (req, res) {
-      var q = new query();
-    q.executeRemove(req, res);
-});
-app.post('/update', function (req, res) {
-     var q = new query();
-    q.executeUpdate(req, res);
+app.post('/sqlQuery', function (req, res) {
+    var q = new query();
+    q.executeSql(req, res);
 });
 app.post('/serverStats', function (req, res) {
     var sc = new serverController();
@@ -93,5 +89,25 @@ app.post('/editUser', function (req, res) {
     var uc = new userController();
     uc.editUser(req, res);
 });
-
+/*
+app.post('/remove', function (req, res) {
+      var q = new query();
+    q.executeRemove(req, res);
+});
+app.post('/update', function (req, res) {
+     var q = new query();
+    q.executeUpdate(req, res);
+});
+app.post('/create', function (req, res) {
+     var q = new query();
+    q.executeInsert(req, res);
+});
+app.post('/findAndModify', function (req, res) {
+     var q = new query();
+    q.executeFindAndModify(req, res);
+});
+app.post('/createCollectionQuery', function (req, res) {
+    var cnt = new collectionController();
+    cnt.createCollection2(req, res);
+});*/
 

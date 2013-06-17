@@ -11,8 +11,7 @@ function () {
         },
         queries:{
           documentQuery:"api/documentQuery",
-          remove:"api/remove",
-          update:"api/update",
+          sqlQuery:"api/sqlQuery",
           replaceDocument:"api/replaceDocument",
           serverStats:"api/serverStats",
           dbStats:"api/dbStats",

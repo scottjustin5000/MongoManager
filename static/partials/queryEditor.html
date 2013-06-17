@@ -9,7 +9,9 @@
        <button class="queryButton" id="newcol"><img title="New Collection" src="/images/newcol.png" alt="new collection"/></button>
       <br />  
       <span class="labelText">&nbsp;</span>  <input type="text" placeholder="use db" data-bind="value: db"/>
-    </div>
+    Query Language: <input type="radio" name="langGroup" value="mongo" data-bind="checked: queryLanguage" /> <span>Mongo</span>
+       <input type="radio" name="langGroup" value="sql" data-bind="checked: queryLanguage" /> <span>SQL</span>
+         </div>
          	
 	<div id="rightSplitterContainer" style="height:95%">
 			<div id="rightTopPane">
