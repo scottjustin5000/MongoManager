@@ -36,7 +36,7 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
          if (!loaded) {
              load();
          }
-         var obj = base64.fromBase64(eobj).split("~~");
+         var obj = base64.fromBase64(eobj).split("&&");
          var id = obj[0];
          currentCollection = obj[1];
          server = obj[2];
@@ -79,6 +79,7 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
      pr = ko.observableArray([{ "key": " ", "value": " "}]),
 
      save = function () {
+         console.log(db);
          var datum = { collection: currentCollection, server: server, db: db };
          if (viewMode === 'json') {
              var rawData = JSON.parse(jsonValue());

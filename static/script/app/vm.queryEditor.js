@@ -1,5 +1,5 @@
 define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'datacontext', 'pubsub', 'ace', 'toastr', 'base64'],
- function ($, ko, route, message, dtx, pubsub, ace, toastr,base64) {
+ function ($, ko, route, message, dtx, pubsub, ace, toastr, base64) {
      var 
     visible = ko.observable(true),
     loaded = false,
@@ -21,6 +21,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     tabCount = 1,
     queryLanguage = ko.observable('mongo'),
     capCollection = ko.observable(false),
+    newDbName = ko.observable(''),
      show = function () {
          visible(true);
          pubsub.mediator.Subscribe(message.serverTree.objSelectionChanged, serverTreeSelectionChange);
@@ -83,8 +84,11 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
         $('#closeNewCollection').bind('click', function (e) {
             $('#crtoverlay').hide();
         });
+        $('#closeNewDb').bind('click', function (e) {
+            $('#crtDbOverlay').hide();
+        });
         $("#createCollection").bind('click', sendNewCollection);
-
+        $("#createNewDb").bind('click', sendNewDb);
         $('.queryButton').bind('click', controlPanelClick);
 
     },
@@ -94,11 +98,8 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             case "executeQuery":
                 executeQuery();
                 break;
-            case "openQuery":
-                openQuery();
-                break;
-            case "saveQuery":
-                saveQuery();
+            case "newDb":
+                newDb(e);
                 break;
             case "newQuery":
                 newQuery();
@@ -151,10 +152,10 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
          document.onselectstart = function () { return false; };
          dragging = true;
      },
-    saveQuery = function () {
-        var elm = $(evt.target);
-        elm.stop().fadeToggle("slow", "linear");
-    },
+     /* saveQuery = function () {
+     var elm = $(evt.target);
+     elm.stop().fadeToggle("slow", "linear");
+     },*/
     newQuery = function () {
         var con = $("#tabscontent").find("div:visible");
 
@@ -180,8 +181,22 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
 
         $(con[0]).hide();
     },
-    openQuery = function () {
+    newDb = function (evt) {
+        var mouseX = evt.pageX - 200;
+        var mouseY = evt.pageY;
 
+        $('#crtDbOverlay').css({ 'top': mouseY, 'left': mouseX });
+        $('#crtDbOverlay').show();
+
+    },
+    sendNewDb = function () {
+        var query = { 'server': selectedServer(), 'db': newDbName() };
+        dtx.postJson(route.commands.createDb, query,
+           function (r) {
+               var data2 = JSON.stringify(r.data, null, 4);
+               toastr.success(data2);
+
+           });
     },
    extractNumber = function (value) {
        var n = parseInt(value);
@@ -193,7 +208,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
             var con = $("#tabscontent").find("div:visible");
             var index = con[0].id.split("_")[1];
             var editor = ace.edit("code_" + index);
-            var queryText = editor.getValue();
+            var queryText = editor.getValue().replace(/(\r\n|\n|\r)/gm, "");
             var server = selectedServer();
 
             var datab = db();
@@ -216,56 +231,65 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
     processMongoQuery = function (query, queryText) {
         //todo: clean up this garbage
         //add error handling and feedback
-  
+
         if (queryText.indexOf('.createCollection(') !== -1) {
             toastr.error('Not supported in query editor. Use the create new collection button', 'Error')
         }
-        else{
-              dtx.postJson(route.queries.documentQuery, { query: query },
+        else {
+            dtx.postJson(route.queries.documentQuery, { query: query },
                   function (r) {
 
-                      if(r.cmd==='find'){
+                      if (r.cmd === 'find') {
                           var data = JSON.parse(r.data);
 
-                            currentCollection(r.collection);
-                            for (var j = 0; j < data.length; j++) {
-                                dr = { "id": data[j]._id, "properties": data[j], "editable": true };
-                                documentResults.push(dr);
-                            }
-                            $("#documentPanel").show();
-                            pubsub.mediator.Publish(message.data.cacheCollection, data);
+                          currentCollection(r.collection);
+                          for (var j = 0; j < data.length; j++) {
+                              dr = { "id": data[j]._id, "properties": data[j], "editable": true };
+                              documentResults.push(dr);
+                          }
+                          $("#documentPanel").show();
+                          pubsub.mediator.Publish(message.data.cacheCollection, data);
                       }
-                      else{
-                            toastr.success(r.cmd+" Complete!");
+                      else if (r.cmd === 'mapReduce') {
+                          var data = JSON.parse(r.data);
+
+                          currentCollection(r.collection);
+                          for (var j = 0; j < data.length; j++) {
+                              dr = { "id": data[j]._id, "properties": data[j], "editable": false };
+                              documentResults.push(dr);
+                          }
+                          $("#documentPanel").show();
                       }
-                    });
-                    
-                }
+                      else {
+                          toastr.success(r.cmd + " Complete!");
+                      }
+                  });
+
+        }
     },
-    processSqlQuery = function (query,queryText) {
-        
+    processSqlQuery = function (query, queryText) {
+
         dtx.postJson(route.queries.sqlQuery, { query: query },
                   function (r) {
 
-                      if(r.cmd==='find'){
+                      if (r.cmd === 'find') {
                           var data = JSON.parse(r.data);
 
-                            currentCollection(r.collection);
-                            for (var j = 0; j < data.length; j++) {
-                                dr = { "id": data[j]._id, "properties": data[j], "editable": true };
-                                documentResults.push(dr);
-                            }
-                            $("#documentPanel").show();
-                            pubsub.mediator.Publish(message.data.cacheCollection, data);
+                          currentCollection(r.collection);
+                          for (var j = 0; j < data.length; j++) {
+                              dr = { "id": data[j]._id, "properties": data[j], "editable": true };
+                              documentResults.push(dr);
+                          }
+                          $("#documentPanel").show();
+                          pubsub.mediator.Publish(message.data.cacheCollection, data);
                       }
-                      else{
-                            toastr.success(r.cmd+" Complete!");
+                      else {
+                          toastr.success(r.cmd + " Complete!");
                       }
-                    });
+                  });
     },
     documentSelected = function (data, event) {
-        var obj = data.properties._id + "~~" + currentCollection() + "~~" + selectedServer() + "~~" + db();
-       
+        var obj = data.properties._id + "&&" + currentCollection() + "&&" + selectedServer() + "&&" + db();
         pubsub.mediator.Publish(message.navigation.selectionChanged, 'documentDetail', base64.toBase64(obj));
     },
     serverTreeSelectionChange = function (evt) {
@@ -364,6 +388,7 @@ define('vm.queryEditor', ['jquery', 'ko', 'config.route', 'config.messages', 'da
          jsonPreview: jsonPreview,
          stickPreview: stickPreview,
          newCollection: newCollection,
+         newDbName: newDbName,
          capCollection: capCollection,
          queryLanguage: queryLanguage,
          load: load,

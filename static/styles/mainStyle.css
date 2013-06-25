@@ -332,7 +332,7 @@ overflow:auto;
    user-select: none;
 }
  /*new/rename collection overlay*/
- #crtoverlay{
+ .createOverlay{
    position:absolute;    
   -webkit-border-radius: 9px;
   -moz-border-radius: 9px;
@@ -340,7 +340,7 @@ overflow:auto;
    z-index: 10001;
 
  }
-   .docCreatecontainer {
+   .createContainer {
   /*margin: 20px auto 50px;*/
   font-family: Populaire, arial; 
   font-size: 22px;

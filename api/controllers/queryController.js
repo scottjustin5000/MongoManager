@@ -10,14 +10,23 @@ function queryController(){
 
 queryController.prototype = {
     executeSql: function (req, res) {
-        var s2m = new sql2Mongo(req.body.query);
-        s2m.convert();
+        var data = req.body.query;
+        var s2m = new sql2Mongo(data);
+        var converted = s2m.convert();
+        mongoClient.connect("mongodb://" + data.serverName + "/" + data.db,
+        function (err, db) {
+
+            var obj = {};
+
+            obj = objectUtility.builder(obj, { "execCommand": converted });
+            obj.execCommand(res, db);
+        });
 
     },
     executeMongo: function (req, res) {
         var data = req.body.query;
-        var serverName = data.serverName;
-        var dbName = data.db;
+        /* var serverName = data.serverName;
+        var dbName = data.db;*/
         var query = data.queryText;
 
         if (query.indexOf('.remove(') !== -1) {
@@ -33,6 +42,10 @@ queryController.prototype = {
         }
         else if (query.indexOf('.findAndModify(') !== -1) {
             this.executeFindAndModify(req, res);
+
+        }
+        else if (query.indexOf('.mapReduce(') !== -1) {
+            this.executeMapReduce(req, res);
 
         }
         else {
@@ -74,6 +87,44 @@ queryController.prototype = {
             // db.close();
         });
     },
+    executeMapReduce: function (req, res) {
+        var data = req.body.query;
+        var serverName = data.serverName;
+        var dbName = data.db;
+        mongoClient.connect("mongodb://" + serverName + "/" + dbName,
+        function (err, db) {
+
+            var parsed = queryParser.parseMapReduce(data.queryText);
+            var q = parsed.query;
+            var obj = {};
+
+            obj = objectUtility.builder(obj, { "execCommand": q });
+            obj.execCommand(res, db);
+
+         /*  
+            var map = function () {
+                emit(this.cust_id, this.price);
+            };
+            var reduce = function (keyCustId, valuesPrices) {
+                return Array.sum(valuesPrices);
+            };
+
+            var coll = db.collection('order');
+            coll.mapReduce(map, reduce, { out: { replace: 'tempCollection'} }, function (err, coll) {
+                if (err) {
+                    console.log(err);
+                }
+                coll.find({}).toArray( function (e, col) {
+                     console.log(col);
+                var dd = { 'data': JSON.stringify(col), 'status': 'success', 'cmd': 'mapReduce' };
+                res.send(dd);
+                });
+               
+
+            });*/
+
+        });
+    },
     executeRemove: function (req, res) {
         var data = req.body.query;
         var serverName = data.serverName;
@@ -84,7 +135,6 @@ queryController.prototype = {
             var parsed = queryParser.parseRemove(data.queryText);
             var q = parsed.query;
             var obj = {};
-            console.log(q);
             obj = objectUtility.builder(obj, { "execCommand": q });
             obj.execCommand(res, db);
 
@@ -132,7 +182,7 @@ queryController.prototype = {
         mongoClient.connect("mongodb://" + serverName + "/" + dbName,
         function (err, db) {
             if (err) {
-                db.close();
+                console.log(err);
             }
             var ObjectID = db.bson_serializer.ObjectID;
             var col = db.collection(collection);

@@ -2,11 +2,12 @@
 	<div class="editorControls" style="background: #bac8dc">
       <span class="labelText">Server:</span> <select data-bind="options:servers, value:selectedServer"></select>
      <button class="queryButton" id="newQuery"><img title="New Query" src="/images/query.png" alt="new query"/></button>
-        <button class="queryButton" id="openQuery"><img title="Open Query" src="/images/folder.png" alt="open query" /></button>
-        <button class="queryButton" id="saveQuery"><img title="Save Query" src="/images/save.png" alt="save query" /> </button> 
+       <!--- <button class="queryButton" id="openQuery"><img title="Open Query" src="/images/folder.png" alt="open query" /></button>
+        <button class="queryButton" id="saveQuery"><img title="Save Query" src="/images/save.png" alt="save query" /> </button> -->
          <button class="queryButton" id="executeQuery"><img title="Execute Query" src="/images/execute.png" alt="execute query"/></button>    
         <button class="queryButton" id="cancelQuery"><img title="Cancel" src="/images/cancel.png" alt="cancel query"/></button>
-       <button class="queryButton" id="newcol"><img title="New Collection" src="/images/newcol.png" alt="new collection"/></button>
+        <button class="queryButton" id="newcol"><img title="New Collection" src="/images/newcol.png" alt="new collection"/></button>
+        <button class="queryButton" id="newDb"><img title="New Db" src="/images/db.png" alt="new collection"/></button>
       <br />  
       <span class="labelText">&nbsp;</span>  <input type="text" placeholder="use db" data-bind="value: db"/>
     Query Language: <input type="radio" name="langGroup" value="mongo" data-bind="checked: queryLanguage" /> <span>Mongo</span>
@@ -44,8 +45,8 @@
                 
      </div>
     </div>
-     <div id="crtoverlay" style="display: none">
-     <div class="docCreatecontainer"> 
+     <div id="crtoverlay" class="createOverlay" style="display: none">
+     <div class="createContainer"> 
               <div style="padding-top: 15px;float: left">
                    <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Name:</label> <input type="text" data-bind="value:newCollection"></input>
                </div>
@@ -60,6 +61,22 @@
         </div>
          <div style="text-align: center">
               <button id="createCollection"> <label class="formlabel">Create</label></button>   
+         </div>
+                 
+              <p></p>
+                
+     </div>
+    </div>
+      <div id="crtDbOverlay" class="createOverlay" style="display: none">
+     <div class="createContainer"> 
+              <div style="padding-top: 15px;float: left">
+                   <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Name:</label> <input type="text" data-bind="value:newDbName"></input>
+               </div>
+          <div style="text-align: right"><img id="closeNewDb" src="/images/close.png" alt="close"/></div>  
+        <div style="clear: both">
+        </div>
+         <div style="text-align: center">
+              <button id="createNewDb"> <label class="formlabel">Create</label></button>   
          </div>
                  
               <p></p>

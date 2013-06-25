@@ -82,7 +82,6 @@ module.exports = function () {
          else {
              q.query = "function(res,db){var col = db.collection('" + collection + "'); col.findAndModify(" + JSON.stringify(obj.query) + "," + JSON.stringify(obj.sort) + "," + JSON.stringify(obj.update) + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success','cmd':'findAndModify' };res.send(dd);});}";
          }
-         console.log(q.query);
          return q;
 
      },
@@ -103,7 +102,6 @@ module.exports = function () {
          return q;
      },
     parseInsert = function (query) {
-
         var collection = getCollection(query, '.insert');
 
         var q = new queryData();
@@ -121,6 +119,37 @@ module.exports = function () {
 
         return q;
     },
+    parseMapReduce = function (query) {
+
+
+        var mnData = query.split('db.');
+        var mprBody = mnData[0];
+        var collection = mnData[1].substring(0, mnData[1].indexOf('.mapReduce'));
+        var q = new queryData();
+        q.collection = collection;
+
+        var body = getBody(mnData[1]);
+
+        if (body.indexOf("inline") !== -1) {
+            if (body.indexOf("ObjectId") !== -1) {
+                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " var ObjectId = db.bson_serializer.ObjectID; col.mapReduce(" + body + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'mapReduce' };res.send(dd);});}";
+            }
+            else {
+                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " col.mapReduce(" + body + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'mapReduce' };res.send(dd);});}";
+            }
+        }
+        else {
+            if (body.indexOf("ObjectId") !== -1) {
+                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " var ObjectId = db.bson_serializer.ObjectID; col.mapReduce(" + body + ",function (err, col) {if (err) { res.send(err); } col.find({}).toArray(function (e, col){var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(col), 'status': 'success', 'cmd':'mapReduce' };res.send(dd);})});}";
+            }
+            else {
+                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " col.mapReduce(" + body + ",function (err, col) {if (err) { res.send(err); } col.find({}).toArray( function (e, col){  var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(col), 'status': 'success', 'cmd':'mapReduce' };res.send(dd);})});}";
+            }
+        }
+        console.log(q.query);
+        return q;
+
+    },
     getCollection = function (query, key) {
         return query.substring(0, query.indexOf(key)).replace('db.', '');
     },
@@ -134,7 +163,8 @@ module.exports = function () {
         parseRemove: parseRemove,
         parseUpdate: parseUpdate,
         parseInsert: parseInsert,
-        parseFindAndModify: parseFindAndModify
+        parseFindAndModify: parseFindAndModify,
+        parseMapReduce: parseMapReduce
     }
 
 

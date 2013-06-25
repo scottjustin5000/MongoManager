@@ -20,6 +20,7 @@ function () {
         },
         commands: {
            createCollection:"api/createCollection",
+           createDb:"api/createDb",
            addUser:"api/addUser",
            loadUsers: "api/loadUsers"
         }

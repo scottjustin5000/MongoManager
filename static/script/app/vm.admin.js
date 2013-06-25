@@ -10,7 +10,7 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
      selectedCommand = ko.observable('serverStatus'),
      userCommands = ko.observableArray(['addUser', 'removeUser']),
      selectedUserCommand = ko.observable('addUser'),
-     dbCommands = ko.observableArray(['addDb', 'removeDb']),
+     dbCommands = ko.observableArray(['addDb', 'dropDb']),
      selectedDbCommand = ko.observable('addDb'),
      adminSelectedServer = ko.observable(''),
      jobCommands = ko.observableArray(['backUp', 'restore']),

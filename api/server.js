@@ -37,6 +37,10 @@ app.post('/expandNavigation', function (req, res) {
     }
 
 });
+app.post('/createDb', function (req, res) {
+    var dbController = new databaseController();
+    dbController.getDbStats(req, res);
+});
 app.post('/documentQuery', function (req, res) {
     var q = new query();
     q.executeMongo(req, res);
