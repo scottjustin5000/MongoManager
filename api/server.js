@@ -1,36 +1,36 @@
 var express = require('express')
 , app = module.exports = express()
-, query = require('./controllers/queryController.js')
-, serverController = require('./controllers/serverController.js')
-, databaseController = require('./controllers/databaseController.js')
-, collectionController = require('./controllers/collectionController.js')
-, userController = require('./controllers/userController.js');
+, query = require('./controllers/queryService.js')
+, serverService = require('./controllers/serverService.js')
+, databaseService = require('./controllers/databaseService.js')
+, collectionService = require('./controllers/collectionService.js')
+, userService = require('./controllers/userService.js');
 
 app.use(express.bodyParser());
 
 app.post('/allServers', function (req, res) {
-    var servers = new serverController();
+    var servers = new serverService();
     servers.load(req, res);
  
 });
 app.post('/newServer', function (req, res) {
-    var servers = new serverController();
+    var servers = new serverService();
     servers.addServer(req, res);
 });
 app.post('/expandNavigation', function (req, res) {
     var requestType = req.body.type;
     switch (requestType) {
         case "server":
-            new serverController().getServerDbs(req, res);
+            new serverService().getServerDbs(req, res);
             break;
         case "database":
-            new databaseController().getDbCollections(req, res)
+            new databaseService().getDbCollections(req, res)
             break;
         case "property":
-            new collectionController().getCollectionInfo(req, res)
+            new collectionService().getCollectionInfo(req, res)
             break;
          case "index":
-            new collectionController().getCollectionIndexInfo(req, res)
+            new collectionService().getCollectionIndexInfo(req, res)
             break;
         default:
             return res.send(200);
@@ -38,7 +38,7 @@ app.post('/expandNavigation', function (req, res) {
 
 });
 app.post('/createDb', function (req, res) {
-    var dbController = new databaseController();
+    var dbController = new databaseService();
     dbController.getDbStats(req, res);
 });
 app.post('/documentQuery', function (req, res) {
@@ -50,27 +50,27 @@ app.post('/sqlQuery', function (req, res) {
     q.executeSql(req, res);
 });
 app.post('/serverStats', function (req, res) {
-    var sc = new serverController();
+    var sc = new serverService();
     sc.getServerStatus(req, res);
 });
 app.post('/dbStats', function (req, res) {
-    var dbController = new databaseController();
-    dbController.getDbStats(req, res);
+    var dbService = new databaseService();
+    dbService.getDbStats(req, res);
 });
 app.post('/replSetGetStatus', function (req, res) {
-     var sc = new serverController();
+     var sc = new serverService();
     sc.replSetGetStatus(req, res);
 });
 app.post('/collectionStats', function (req, res) {
-    var cnt = new collectionController();
+    var cnt = new collectionService();
     cnt.getCollectionStats(req, res);
 });
 app.post('/createCollection', function (req, res) {
-       var cnt = new collectionController();
+       var cnt = new collectionService();
     cnt.createCollection(req, res);
 });
 app.post('/renameCollection', function (req, res) {
-    var cc = new collectionController();
+    var cc = new collectionService();
     cc.renameCollection(req,res);
 });
 app.post('/replaceDocument', function (req, res) {
@@ -78,40 +78,20 @@ app.post('/replaceDocument', function (req, res) {
     q.executeReplace(req, res);
 });
 app.post('/addUser', function (req, res) {
-    var uc = new userController();
+    var uc = new userService();
     uc.addUser(req, res);
 });
 app.post('/loadUsers', function (req, res) {
-    var uc = new userController();
+    var uc = new userService();
     uc.loadUsers(req, res);
 });
 app.post('/removeUser', function (req, res) {
-    var uc = new userController();
+    var uc = new userService();
     uc.removeUser(req, res);
 });
 app.post('/editUser', function (req, res) {
-    var uc = new userController();
+    var uc = new userService();
     uc.editUser(req, res);
 });
-/*
-app.post('/remove', function (req, res) {
-      var q = new query();
-    q.executeRemove(req, res);
-});
-app.post('/update', function (req, res) {
-     var q = new query();
-    q.executeUpdate(req, res);
-});
-app.post('/create', function (req, res) {
-     var q = new query();
-    q.executeInsert(req, res);
-});
-app.post('/findAndModify', function (req, res) {
-     var q = new query();
-    q.executeFindAndModify(req, res);
-});
-app.post('/createCollectionQuery', function (req, res) {
-    var cnt = new collectionController();
-    cnt.createCollection2(req, res);
-});*/
+
 
