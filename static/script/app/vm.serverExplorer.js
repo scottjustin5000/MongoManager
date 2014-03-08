@@ -1,11 +1,11 @@
-define('vm.serverExplorer', ['jquery', 'ko', 'config.route', 'config.messages', 'datacontext', 'pubsub'],
-function ($, ko, route, message, dtx, pubsub) {
-    var 
-    loaded = false,
-    serverCredentials = {},
-    invalidated = true,
-    droptarget = false;
-    load = function () {
+define('vm.serverExplorer', ['jquery', 'ko', 'config.route', 'config.messages', 'serverManager', 'pubsub'],
+function ($, ko, route, message, serverManager, pubsub) {
+  var loaded = false;
+  var serverCredentials = {};
+  var invalidated = true;
+  var droptarget = false;
+  
+  var load = function () {
         if (!loaded) {
             $('#serverConnection').bind('click', function (e) {
                 $('#overlay').show();
@@ -18,7 +18,7 @@ function ($, ko, route, message, dtx, pubsub) {
         }
         if (!loaded && invalidated) {
             $("#connect").bind('click', connect);
-            dtx.postJson('api/allServers', { id: '0' },
+            serverManager.loadServers(0,
            function (r) {
                $("#serverTree").jstree({
                    "json_data": {
@@ -74,19 +74,16 @@ function ($, ko, route, message, dtx, pubsub) {
                                    }
                                }
                            }
-
                        }
-
                    }
                }).bind("select_node.jstree", function (e, data) {
 
-
                    switch (data.rslt.obj.attr("type")) {
                        case "server":
-                           pubsub.mediator.Publish(message.serverTree.objSelectionChanged, { "type": data.rslt.obj.attr("type"), "id": data.rslt.obj.attr("id") });
+                           pubsub.pub(message.serverTree.objSelectionChanged, { "type": data.rslt.obj.attr("type"), "id": data.rslt.obj.attr("id") });
                            break;
                        case "database":
-                           pubsub.mediator.Publish(message.serverTree.objSelectionChanged, { "type": data.rslt.obj.attr("type"), "id": data.rslt.obj.attr("id") });
+                           pubsub.pub(message.serverTree.objSelectionChanged, { "type": data.rslt.obj.attr("type"), "id": data.rslt.obj.attr("id") });
                            break;
                        case "collection":
 
@@ -97,11 +94,10 @@ function ($, ko, route, message, dtx, pubsub) {
                            var reqData = { server: data.rslt.obj.attr("server"), db: infArray[0], collection: infArray[1] };
                            var mouseX = data.rslt.e.pageX;
                            var mouseY = data.rslt.e.pageY;
-                           dtx.postJson(route.queries.collectionStats, reqData,
+                           serverManager.getCollectionStats(reqData,
                                function (r) {
                                    var text = JSON.stringify(r.data, null, 4);
                                    statPreview(text);
-
 
                                    $('#colStatsOverlay').css({ 'top': mouseY, 'left': mouseX + 35 });
                                    $("#colStatsOverlay").show();
@@ -112,14 +108,14 @@ function ($, ko, route, message, dtx, pubsub) {
                    }
                }).bind("rename.jstree", function (e, data) {
 
-
                    var serv = data.rslt.obj.attr("server");
                    var id = data.rslt.obj.attr("id");
                    var nn = data.rslt.new_name;
                    var on = data.rslt.old_name;
         
                    var dat = { server: serv, namespace: id.split('.')[0],oldName:on, newName:nn, drop:droptarget };
-                   dtx.postJson(route.collection.renameCollection, { data: dat },
+                  
+                   serverManager.renameCollection(dat,
                     function (r) {
                         $(data.rslt.obj).attr("id", r.data);
                     });
@@ -136,8 +132,8 @@ function ($, ko, route, message, dtx, pubsub) {
             invalidated = false;
         }
 
-    },
-    connect = function () {
+    };
+    var connect = function () {
 
         var serv = server();
         var arr = serv.split(':');
@@ -156,30 +152,34 @@ function ($, ko, route, message, dtx, pubsub) {
 
         if (persist()) {
             var dat = { server: serv, port: port };
-            dtx.postJson(route.server.newServer, { data: dat },
+            serverManager.createServer({ data: dat },
         function (r) {
             console.log(r);
         });
         }
-    },
-    close = function () {
+    };
+
+    var close = function () {
 
         displayOverlay(false);
         $('#overlay').hide();
-    },
-    show = function () {
+    };
 
-    },
-    hide = function () {
+   var show = function () {
 
     };
-    displayOverlay = ko.observable(false);
-    persist = ko.observable(true);
-    server = ko.observable('');
-    user = ko.observable('');
-    pw = ko.observable('');
-    currentCollection = ko.observable('');
-    statPreview = ko.observable('');
+
+    var hide = function () {
+
+    };
+    
+    var displayOverlay = ko.observable(false);
+    var persist = ko.observable(true);
+    var server = ko.observable('');
+    var user = ko.observable('');
+    var pw = ko.observable('');
+    var currentCollection = ko.observable('');
+    var statPreview = ko.observable('');
     return {
         displayOverlay: displayOverlay,
         persist: persist,

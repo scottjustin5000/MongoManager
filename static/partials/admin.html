@@ -25,7 +25,10 @@
        <div id="adminTabscontent" style="height: 100%">
             <div class="adminTabpage" id="adminTabpage_1" style="height:100%">
                 <div id="overviewControls">    
-                    <span class="labelText">Command:</span> <select data-bind="options:commands, value:selectedCommand"></select>
+<div style="float:left">
+                    <span class="labelText">Command:</span>
+                  </div>
+                    <div class="styled" style="float:left"> <select data-bind="options:commands, value:selectedCommand"></select></div>
                       <button id="executeCommand"><img src="/images/execute.png" alt="execute query"/></button>  
                     <!-- 
                  <div id="adminColselect">
@@ -45,8 +48,9 @@
            </div>
            <div class="adminTabpage" id="adminTabpage_2" style="height:100%">
                 <div id="userControls" style="display: none"></div>
-                <span class="labelText">Command:</span> <select data-bind="options:userCommands, value:selectedUserCommand"></select>
-  
+               <div style="float:left"> <span class="labelText">Command:</span></div>
+                <div class="styled" style="width:120px"> 
+                  <select data-bind="options:userCommands, value:selectedUserCommand"></select></div>
                <div class="adminJobContainer">
                   <div id="adduser"> 
                    <div id="addUserContainer" style="float: left">
@@ -83,28 +87,28 @@
            </div>
             <div class="adminTabpage" id="adminTabpage_3" style="height:100%">
                 <div id="dbControls" style="display: none"></div>
-                    <span class="labelText">Command:</span> <select data-bind="options:dbCommands, value:selectedDbCommand"></select>
+                   <div style="float:left"> <span class="labelText">Command:</span></div><div class="styled" style="width:120px; float:left">  <select data-bind="options:dbCommands, value:selectedDbCommand"></select></div>
                       <button id="executeDbCommand"><img src="/images/execute.png" alt="execute"/></button>  
               <div style="width: 100%; height: 100%;"></div>
            </div>
             <div class="adminTabpage" id="adminTabpage_4" style="height:100%">
                 <div id="jobControls">
-                     <span class="labelText">Command:</span> <select data-bind="options:jobCommands, value:selectedJobCommand"></select>
+                    <div style="float:left"><span class="labelText">Command:</span></div> <div class="styled" style="width:120px; float:left"> <select style="width:120px" data-bind="options:jobCommands, value:selectedJobCommand"></select></div>
                      </div>
                <div id="backup" class="adminJobContainer">
                    <span class="labelText">Options</span>
                       <div class="adminField">
-                  <span class="labelText">Type</span>  <select data-bind="options:backupTypes, value:selectedBackupType"></select>
+                  <div style="float:left"> <span class="labelText">Type</span> </div> <div class="styled" style="width:120px;"> <select style="width:120px" data-bind="options:backupTypes, value:selectedBackupType"></select></div>
 
                    </div>
                    <span class="labelText">Schedule</span>
-                   <div class="adminField">
-                <span class="labelText">Backup</span>
-                       <select data-bind="options:backupIntervals, value:selectedBackupInterval"></select> at 
-                       <select data-bind="options:backupHours, value:selectedHourInterval"></select>
-                      <span class="labelText"> UTC</span>
-
+                   <div class="adminField" style="height:33px">
+                <div style="float:left"> <span class="labelText">Backup</span></div>
+                      <div class="styled" style="width:120px; float:left">  <select style="width:120px" data-bind="options:backupIntervals, value:selectedBackupInterval"></select></div><div style="float:left; padding:5px"> at</div> 
+                      <div class="styled" style="width:120px; float:left">  <select style="width:120px" data-bind="options:backupHours, value:selectedHourInterval"></select></div>
+                      <span class="labelText" style="padding:5px"> UTC</span>
                    </div>
+                    <div style="clear: both"></div>
                     <span class="labelText">Execute</span>   
                    <button id="executeJobCommand"><img src="/images/execute.png" alt="execute"/></button>  
                </div>

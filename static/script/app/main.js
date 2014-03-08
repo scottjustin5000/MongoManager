@@ -9,10 +9,10 @@
         define('jquery', [], function () { return root.jQuery; });
         define('sammy', [], function () { return root.Sammy });
         define('ko', [], function () { return root.ko; }); 
-        define('mediator', [], function () { return root.Mediator; });
         define('ace', [], function () { return root.ace; });
         define('toastr', [], function () { return root.toastr; });
         define('base64', [], function () { return root.base64; });
+        define('pubsub',[],function(){return root.pubsub;})
     }
     
     function loadPluginsAndBoot() {

@@ -1,8 +1,19 @@
-(function(window) {
-    window.base64 = (function() {
+!(function (factory) {
+    //CommonJS
+    if (typeof require === "function" && typeof exports === "object" && typeof module === "object") {
+        factory(exports);
+        //AMD
+    } else if (typeof define === "function" && define.amd) {
+        define('base64',[], factory);
+        //normal script tag
+    } else {
+        window.base64 = factory();
+    }
+}
+(function() {
         var b64chars
-        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
-        toBase64 = function(input){
+        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+        var toBase64 = function(input){
              var output = "";
              var chr1;
              var chr2;
@@ -37,8 +48,8 @@
                 b64chars.charAt(enc3) + b64chars.charAt(enc4);
         }
     return output;
-    },
-     fromBase64 =function(input){
+    };
+     var fromBase64 =function(input){
            var output = "";
            var chr1;
            var chr2;
@@ -73,8 +84,8 @@
     }
      output = decode(output);
     return output;
-   },
-    encode = function(data){
+   };
+    var encode = function(data){
         data = data.replace(/\r\n/g,"\n");
         var utftext = "";
         for (var n = 0; n < data.length; n++) {
@@ -94,8 +105,8 @@
 
     }
     return utftext;
-    },
-    decode = function(data){
+    };
+    var decode = function(data){
         var results = "";
         var i = 0;
         var c = c1 = c2 = 0;
@@ -120,10 +131,9 @@
 
     }
     return results;
-    }
+    };
     return{
             toBase64:toBase64,
             fromBase64:fromBase64
       }
- })()
-} (window))
+ }));

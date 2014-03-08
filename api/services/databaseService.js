@@ -32,7 +32,7 @@ databaseController.prototype = {
 
                 var m = new mongoTreeFormatter();
                 var f = m.formatCollectionsResponse(collections, serverName);
-
+                db.close();
                 res.send(f);
             });
         });
@@ -46,8 +46,11 @@ databaseController.prototype = {
             db.command({ dbStats: dbName }, function (err, dx) {
                 if (!err) {
                     var results = { 'data': dx, 'status': 'success' };
+                    db.close();
                     res.send(results);
                 }
+                db.close();
+
             });
 
         });

@@ -1,21 +1,24 @@
 define('vm.replication', ['jquery', 'ko', 'config.route', 'datacontext'],
  function ($, ko, route, dtx) {
 
-     var 
-     loaded = false,
-     load = function () {
+     var  loaded = false;
+
+     var load = function () {
          if (!loaded) {
              //$("#rightReplicationSplitterContainer").splitter({ splitHorizontal: true, A: $('#replicationRightTopPane'), B: $('#replicationRightBottomPane'), closeableto: 100 });
          }
 
 
-     },
-     show = function () {
+     };
+
+     var show = function () {
          $('#replicationEditor').show();
-     },
-     hide = function () {
+     };
+
+     var hide = function () {
          $('#replicationEditor').hide();
      };
+     
      return {
          load: load,
          show: show,

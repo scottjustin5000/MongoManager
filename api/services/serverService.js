@@ -101,7 +101,7 @@ serverController.prototype = {
                     }
                     var m = new mongoTreeFormatter();
                     var complete = m.formatDbResponse(arr, serverName);
-            
+            db.close();
                     res.send(complete);
                 }
             });

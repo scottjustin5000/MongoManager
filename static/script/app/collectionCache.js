@@ -2,7 +2,7 @@ define('collectionCache',
     ['pubsub', 'config.messages'],
     function (pubsub, message) {
         init = function () {
-            pubsub.mediator.Subscribe(message.data.cacheCollection, setAll);
+            pubsub.sub(message.data.cacheCollection, setAll);
         }
 
         var 
@@ -11,7 +11,6 @@ define('collectionCache',
             },
             getById = function (id) {
                 var data = localStorage.getItem(id);
-               // console.log(data);
                 if (data) {
                     return JSON.parse(data);
                 }

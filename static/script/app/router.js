@@ -4,13 +4,15 @@ function (sammy, vm, pubsub, message) {
 
         configure = function () {
             sammy.run();
-            pubsub.mediator.Subscribe(message.navigation.selectionChanged, updateApplicationState);
+            pubsub.sub(message.navigation.selectionChanged, updateApplicationState);
         },
 
         index = function (obj, i) {
             return obj[i];
         },
+
         hideAllButCurrent = function (cv, params) {
+            console.log(cv);
             if (cv != "") {
                 for (var p in vm) {
 
@@ -27,38 +29,42 @@ function (sammy, vm, pubsub, message) {
 
                 }
                 var c = vm[cv];
+                console.log(c);
                 params == null ? c.show() : c.show(params);
             }
         },
         updateApplicationState = function (vmName, params) {
             if (params) {
-                sammy.setLocation('#/' + vmName + '/' + params);
+                sammy.setLocation('#' + vmName + '/' + params);
 
             }
             else {
-                sammy.setLocation('#/' + vmName);
+                sammy.setLocation('#' + vmName);
             }
         },
 
     sammy = $.sammy(function () {
 
-        /* this.get('#/', function () {
-        // hideAllButCurrent('queryEditor');
-        });*/
-        this.get('#/admin', function () {
+        this.get('#/', function () {
+         hideAllButCurrent('queryEditor');
+        });
+          this.get('#collections', function () {
+            hideAllButCurrent('queryEditor');
+        });
+        this.get('#admin', function () {
             hideAllButCurrent('admin');
         });
-        this.get('#/documentDetail/:param', function () {
+        this.get('#documentDetail/:param', function () {
             hideAllButCurrent('documentEditor', this.params.param);
         });
-        this.get('#/index', function () {
+        this.get('#index', function () {
             hideAllButCurrent('indexManager');
         });
-        this.get('#/replication', function () {
+        this.get('#replication', function () {
             hideAllButCurrent('replication');
 
         });
-        this.get('#/profile', function () {
+        this.get('#profile', function () {
             hideAllButCurrent('profiler');
         });
         this.get('', function () {

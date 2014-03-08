@@ -67,7 +67,7 @@ queryController.prototype = {
             obj = objectUtility.builder(obj, { "execCommand": q });
             obj.execCommand(res, db);
 
-            // db.close();
+            
         });
     },
     executeFindAndModify: function (req, res) {
@@ -84,7 +84,6 @@ queryController.prototype = {
             obj = objectUtility.builder(obj, { "execCommand": q });
             obj.execCommand(res, db);
 
-            // db.close();
         });
     },
     executeMapReduce: function (req, res) {

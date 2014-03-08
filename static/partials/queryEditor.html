@@ -1,6 +1,8 @@
-<div id="queryEditor" data-bind="visible: visible" style="display: none">
+<div id="queryEditor" data-bind="visible: visible" style="display: none;">
 	<div class="editorControls" style="background: #bac8dc">
-      <span class="labelText">Server:</span> <select data-bind="options:servers, value:selectedServer"></select>
+<div class="styled" style="float:left"><select data-bind="options:servers, value:selectedServer"></select></div>
+ <input type="text" placeholder="use db" data-bind="value: db"/>
+
      <button class="queryButton" id="newQuery"><img title="New Query" src="/images/query.png" alt="new query"/></button>
        <!--- <button class="queryButton" id="openQuery"><img title="Open Query" src="/images/folder.png" alt="open query" /></button>
         <button class="queryButton" id="saveQuery"><img title="Save Query" src="/images/save.png" alt="save query" /> </button> -->
@@ -8,10 +10,9 @@
         <button class="queryButton" id="cancelQuery"><img title="Cancel" src="/images/cancel.png" alt="cancel query"/></button>
         <button class="queryButton" id="newcol"><img title="New Collection" src="/images/newcol.png" alt="new collection"/></button>
         <button class="queryButton" id="newDb"><img title="New Db" src="/images/db.png" alt="new collection"/></button>
-      <br />  
-      <span class="labelText">&nbsp;</span>  <input type="text" placeholder="use db" data-bind="value: db"/>
-    Query Language: <input type="radio" name="langGroup" value="mongo" data-bind="checked: queryLanguage" /> <span>Mongo</span>
-       <input type="radio" name="langGroup" value="sql" data-bind="checked: queryLanguage" /> <span>SQL</span>
+    <div style="clear:both"></div>
+    <input id="mongo" type="radio" name="langGroup" value="mongo" data-bind="checked: queryLanguage" /> <label for="mongo">Mongo Query</label>
+       <input id="sql" type="radio" name="langGroup" value="sql" data-bind="checked: queryLanguage" /> <label for="sql">SQL Query</label>
          </div>
          	
 	<div id="rightSplitterContainer" style="height:95%">
@@ -36,31 +37,34 @@
 		</div>
    <div id="docoverlay" style="display: none">
      <div class="docPreviewcontainer"> 
-              <div style="padding-top: 15px;">
-                   <label class="formlabel"> &nbsp;&nbsp;Document:</label> <span data-bind="text:currentId"></span>
+              <div style="padding-top: 15px; padding-left:10px">
+                   <span> &nbsp;&nbsp;Document:</span> <span data-bind="text:currentId"></span>
                </div>
        
-                  <textarea id="docPreviewTextArea" data-bind="value:jsonPreview"></textarea>
+                  <textarea style="font-family:arial" id="docPreviewTextArea" data-bind="value:jsonPreview"></textarea>
               <p></p>
                 
      </div>
     </div>
      <div id="crtoverlay" class="createOverlay" style="display: none">
      <div class="createContainer"> 
-              <div style="padding-top: 15px;float: left">
-                   <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Name:</label> <input type="text" data-bind="value:newCollection"></input>
+        <div style="text-align: right"><img id="closeNewCollection" src="/images/close.png" alt="close"/></div>  
+         <div style="margin-left:5px;">Create a New Collection</div>
+              <div style="float: left; margin-top:5px;margin-left:5px">
+                 <input placeholder="Collection Name" type="text" data-bind="value:newCollection"></input>
                </div>
-          <div style="text-align: right"><img id="closeNewCollection" src="/images/close.png" alt="close"/></div>  
-        <div style="clear: both">
-         <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Capped Collection:</label> 
-            <input type="checkbox" data-bind="checked: capCollection" />
+         
+        <div style="clear: both; margin-left:5px">
+        <input id="capCol" type="checkbox" data-bind="checked: capCollection" />
+         <label for="capCol">&nbsp;Capped Collection?</label> 
         </div>
-          <div data-bind="visible:capCollection">
-    <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Size:</label> <input type="text" placeholder="optional" data-bind="value:collectionSize"></input><br/>
-              <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Max:</label> <input placeholder="optional" type="text" data-bind="value:collectionMax"></input>
+          <div data-bind="visible:capCollection" style="margin-left:5px">
+ <input type="text" placeholder="Size (optional)" data-bind="value:collectionSize"></input><br/>
+              <input placeholder="Max (optional)" type="text" data-bind="value:collectionMax"></input>
         </div>
-         <div style="text-align: center">
-              <button id="createCollection"> <label class="formlabel">Create</label></button>   
+         <div style="text-align:center; margin-top:5px">
+              <a id="createCollection" href="#" class="confirmbutton">Create</a>
+              <a id="cancelCreateCollection" href="#" class="cancelbutton">Cancel</a>  
          </div>
                  
               <p></p>
@@ -69,16 +73,17 @@
     </div>
       <div id="crtDbOverlay" class="createOverlay" style="display: none">
      <div class="createContainer"> 
-              <div style="padding-top: 15px;float: left">
-                   <label class="formlabel" style="width: 60px; display: inline-block">&nbsp;Name:</label> <input type="text" data-bind="value:newDbName"></input>
+        <div style="text-align: right"><img id="closeNewDb" src="/images/close.png" alt="close"/></div>  
+         <div style="margin-left:5px;">Create a New Database</div>
+              <div style="margin-top:5px;margin-left:5px;float: left">
+                  <input placeholder="Database Name" type="text" data-bind="value:newDbName"></input>
                </div>
-          <div style="text-align: right"><img id="closeNewDb" src="/images/close.png" alt="close"/></div>  
         <div style="clear: both">
         </div>
-         <div style="text-align: center">
-              <button id="createNewDb"> <label class="formlabel">Create</label></button>   
-         </div>
-                 
+         <div style="text-align:center; margin-top:5px">
+              <a id="createNewDb" href="#" class="confirmbutton">Create</a>
+              <a id="cancelCreateDb" href="#" class="cancelbutton">Cancel</a>  
+         </div>                 
               <p></p>
                 
      </div>

@@ -1,37 +1,35 @@
 define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messages', 'pubsub', 'model.userProfile'],
  function ($, ko, route, dtx, message, pubsub, UserProfile) {
 
-     var 
-     loaded = false,
-     mUserName = ko.observable(''),
-     mPassword = ko.observable(''),
-    mConfirmPassword = ko.observable(''),
-     commands = ko.observableArray(['serverStatus', 'replSetGetStatus', 'dbStats', 'collStats']),
-     selectedCommand = ko.observable('serverStatus'),
-     userCommands = ko.observableArray(['addUser', 'removeUser']),
-     selectedUserCommand = ko.observable('addUser'),
-     dbCommands = ko.observableArray(['addDb', 'dropDb']),
-     selectedDbCommand = ko.observable('addDb'),
-     adminSelectedServer = ko.observable(''),
-     jobCommands = ko.observableArray(['backUp', 'restore']),
-     selectedJobCommand = ko.observable('backUp'),
-     backupTypes = ko.observableArray(['mongoDump', 'fileSystem']),
-     selectedBackupType = ko.observable('mongoDump'),
-     backupIntervals = ko.observableArray(['monthly', 'weekly', 'daily', 'hourly']),
-     selectedBackupInterval = ko.observable('daily'),
-     backupHours = ko.observableArray(['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']),
-     selectedHourInterval = ko.observable('12:00'),
-     adminDb = ko.observable(''),
-     adminCol = ko.observable(''),
-     adminResult = ko.observable(''),
-     userRoles = ko.observableArray(['read', 'readWrite', 'dbAdmin', 'userAdmin', 'clusterAdmin', 'readAnyDatabase', 'readWriteAnyDatabase', 'dbAdminAnyDatabase', 'userAdminAnyDatabase']),
-     selectedRole = ko.observableArray([]),
-     profiles = ko.observableArray([]),
-     dbUsers = ko.observableArray([]),
-     selectedDbUsers = ko.observableArray([])
-     /*Global*/
+   var loaded = false;
+   var mUserName = ko.observable('');
+   var mPassword = ko.observable('');
+   var mConfirmPassword = ko.observable('');
+   var commands = ko.observableArray(['serverStatus', 'replSetGetStatus', 'dbStats', 'collStats']);
+   var selectedCommand = ko.observable('serverStatus');
+   var userCommands = ko.observableArray(['addUser', 'removeUser']);
+   var selectedUserCommand = ko.observable('addUser');
+   var dbCommands = ko.observableArray(['addDb', 'dropDb']);
+   var selectedDbCommand = ko.observable('addDb');
+   var adminSelectedServer = ko.observable('');
+   var jobCommands = ko.observableArray(['backUp', 'restore']);
+   var selectedJobCommand = ko.observable('backUp');
+   var backupTypes = ko.observableArray(['mongoDump', 'fileSystem']);
+   var selectedBackupType = ko.observable('mongoDump');
+   var backupIntervals = ko.observableArray(['monthly', 'weekly', 'daily', 'hourly']);
+   var selectedBackupInterval = ko.observable('daily');
+   var backupHours = ko.observableArray(['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']);
+   var selectedHourInterval = ko.observable('12:00');
+   var adminDb = ko.observable('');
+   var adminCol = ko.observable('');
+   var adminResult = ko.observable('');
+   var userRoles = ko.observableArray(['read', 'readWrite', 'dbAdmin', 'userAdmin', 'clusterAdmin', 'readAnyDatabase', 'readWriteAnyDatabase', 'dbAdminAnyDatabase', 'userAdminAnyDatabase']);
+   var selectedRole = ko.observableArray([]);
+   var profiles = ko.observableArray([]);
+   var dbUsers = ko.observableArray([]);
+   var selectedDbUsers = ko.observableArray([]);
 
-     load = function () {
+     var load = function () {
          if (!loaded) {
 
 
@@ -84,20 +82,22 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
              $('#passwordConfirm').keyup(validatePassword);
              $('#loadUser').bind('click', loadUsers);
          }
-     },
+     };
 
-     show = function () {
+     var show = function () {
          $('#adminEditor').show();
-         pubsub.mediator.Subscribe(message.serverTree.objSelectionChanged, serverTreeSelectionChange);
+         pubsub.sub(message.serverTree.objSelectionChanged, serverTreeSelectionChange);
 
          load();
-     },
-     hide = function () {
-         $('#adminEditor').hide();
-         pubsub.mediator.Remove(message.serverTree.objSelectionChanged);
+     };
 
-     },
-       serverTreeSelectionChange = function (evt) {
+     var hide = function () {
+         $('#adminEditor').hide();
+         pubsub.unsub(message.serverTree.objSelectionChanged);
+
+     };
+
+     var serverTreeSelectionChange = function (evt) {
            if (evt.type == "server") {
                adminSelectedServer(evt.id);
            }
@@ -105,8 +105,9 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
                adminDb(evt.id);
            }
 
-       },
-      displayPage = function () {
+       };
+       
+      var displayPage = function () {
 
           var con = $("#adminTabscontent").find("div:visible");
           var current = con[0].id.split("_")[1];
@@ -120,10 +121,10 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
           this.setAttribute("class", "tabActiveHeader");
           document.getElementById("adminTabpage_" + ident).style.display = "block";
           this.parentNode.setAttribute("data-current", ident);
-      },
+      };
 
      /*USER*/
-     loadUsers = function (e) {
+     var loadUsers = function (e) {
          if (adminSelectedServer().length > 0 && adminDb().length > 0) {
              var dat = { "server": adminSelectedServer(), "db": adminDb() };
              dbUsers.removeAll();
@@ -137,12 +138,14 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
          else {
              alert("server and db selection required");
          }
-     },
-     removeSelected = function () {
+     };
+
+     var removeSelected = function () {
          userRoles.removeAll(selectedRole());
          selectedRole([]);
-     },
-     addUser = function () {
+     };
+
+     var addUser = function () {
          var dat;
          if (profiles().length > 0) {
              dat = ko.toJS(profiles);
@@ -157,8 +160,9 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
                mPassword('');
                profiles.removeAll();
            });
-     },
-     addProfile = function () {
+     };
+
+     var addProfile = function () {
          if (mUserName().length > 0 && mPassword().length > 0 && adminSelectedServer().length > 1) {
              var p = new UserProfile();
              p.username = mUserName();
@@ -173,9 +177,10 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
              p.flatRoles = str.slice(0, -1);
              profiles.push(p);
          }
-     },
-     validatePassword = function () {
-         if (mPassword() != $("#passwordConfirm").val()) {
+     };
+
+     var validatePassword = function () {
+         if (mPassword() !== $("#passwordConfirm").val()) {
 
              $("#validateStatus").text("passwords don't match");
          }
@@ -183,8 +188,9 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
              $("#validateStatus").text(" ");
 
          }
-     },
-     selectedUserCommand.subscribe(function (newValue) {
+     };
+
+     var selectedUserCommand.subscribe(function (newValue) {
          if (newValue == "addUser") {
 
              $("#modifyUser").hide();
@@ -198,10 +204,10 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
              $("#adduser").hide();
              $("#modifyUser").show();
          }
-     }),
+     });
 
      /*OVERVIEW*/
-    execServerStatus = function () {
+    var execServerStatus = function () {
         if (adminSelectedServer().length > 1) {
             var query = { 'serverName': adminSelectedServer() };
             dtx.postJson(route.queries.serverStats, { query: query },
@@ -216,8 +222,9 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
             alert("server selection required");
         }
 
-    },
-    execDbStats = function () {
+    };
+
+    var execDbStats = function () {
         if (adminSelectedServer().length > 1 && adminDb().length > 1) {
             var query = { 'server': adminSelectedServer(), 'db': adminDb() };
             dtx.postJson(route.queries.dbStats, query,
@@ -231,8 +238,9 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
         else {
             alert("server and db selection required");
         }
-    },
-    execReplSetGetStatus = function () {
+    };
+
+    var execReplSetGetStatus = function () {
 
         if (adminSelectedServer().length > 1) {
             var query = { 'server': adminSelectedServer() };
@@ -248,16 +256,6 @@ define('vm.admin', ['jquery', 'ko', 'config.route', 'datacontext', 'config.messa
             alert("server and db selection required");
         }
     };
-     /*execCollStats = function () {
-     var query = { 'server': adminSelectedServer(), 'db': adminDb(), 'collection': adminCol() };
-     dtx.postJson(route.queries.collectionStats, query,
-     function (r) {
-     var data2 = JSON.stringify(r.data, null, 4);
-
-     adminResult(data2);
-
-     });
-     },*/
 
      return {
          load: load,

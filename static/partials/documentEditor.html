@@ -1,14 +1,19 @@
 <div id="documentEditor" style="display: none">
    <div id="docEditorToolbar">
-       <input class="dataFormat" type="radio" name="dataFormat" value="json" checked >view as json</input>
-       <input class="dataFormat" type="radio" name="dataFormat" value="form">view as form</input>
+       <input id="jsonrdo" class="dataFormat" type="radio" name="dataFormat" value="json" checked ></input><label for="jsonrdo">view as json</label>
+       <input id="formrdo" class="dataFormat" type="radio" name="dataFormat" value="form"></input><label for="formrdo">view as form</label>
           <button class="docButton" id="saveDoc"><img title="Save" src="/images/save.png" alt="save document" /> </button> 
           <button class="docButton" id="deleteDoc"><img title="Delete" src="/images/cancel.png" alt="delete doc"/></button>
    </div>
- <div id="formView" style="display: none">
-     <div data-bind="foreach:pr()" style="text-align: center">
-           <p> <label><span data-bind="text:key"></span>:</label><input data-bind="value:value"></input> </p> 
-       </div>
+ <div id="formView" style="display: none; text-align:center">
+<table style="margin: 0 auto;">
+    <tbody data-bind="foreach: pr()">
+        <tr>
+            <td data-bind="text: key"></td>
+            <td><input data-bind="value:value"></input></td>
+        </tr>
+    </tbody>
+</table>
     </div>
     <div id="jsonView">
     <textarea  style="width: 100%; height: 100%; min-height:700px" data-bind="value:jsonValue"></textarea>

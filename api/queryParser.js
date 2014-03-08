@@ -28,10 +28,10 @@ module.exports = function () {
         var body = getBody(query);
 
         if (body.indexOf("ObjectId") !== -1) {
-            q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success', 'cmd':'remove' };res.send(dd);});}";
+            q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success', 'cmd':'remove' }; db.close(); res.send(dd);});}";
         }
         else {
-            q.query = "function(res,db){var col = db.collection('" + collection + "'); col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'remove' };res.send(dd);});}";
+            q.query = "function(res,db){var col = db.collection('" + collection + "'); col.remove(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'remove' }; db.close(); res.send(dd);});}";
         }
 
 
@@ -48,19 +48,19 @@ module.exports = function () {
 
         if (query.indexOf(".findOne") !== -1) {
             if (body.indexOf("ObjectId") !== -1) {
-                q.query = "function(res,db){var col = db.collection('" + collection + "');  var ObjectId = db.bson_serializer.ObjectID; col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success','cmd':'find' }; res.send(result) });}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "');  var ObjectId = db.bson_serializer.ObjectID; col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success','cmd':'find' }; db.close(); res.send(result) });}";
             }
             else {
-                q.query = "function(res,db){var col = db.collection('" + collection + "'); col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'find' }; res.send(result) });}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "'); col.findOne(" + body + ", function (err, doc) { if (err) { res.send(err); } var result = {'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'find' }; db.close(); res.send(result) });}";
             }
 
         }
         else {
             if (body.indexOf("ObjectId") !== -1) {
-                q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'find' };res.send(dd);});}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'find' }; db.close(); res.send(dd);});}";
             }
             else {
-                q.query = "function(res,db){var col = db.collection('" + collection + "'); col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'find' };res.send(dd);});}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "'); col.find(" + body + ").toArray(function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'find' }; db.close(); res.send(dd);});}";
             }
 
         }
@@ -77,10 +77,10 @@ module.exports = function () {
          var obj = eval("(" + body + ')');
 
          if (body.indexOf("ObjectId") !== -1) {
-             q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.findAndModify(" + JSON.stringify(obj.query) + "," + JSON.stringify(obj.sort) + "," + JSON.stringify(obj.update) + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'findAndModify' };res.send(dd);});}";
+             q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.findAndModify(" + JSON.stringify(obj.query) + "," + JSON.stringify(obj.sort) + "," + JSON.stringify(obj.update) + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'findAndModify' }; db.close(); res.send(dd);});}";
          }
          else {
-             q.query = "function(res,db){var col = db.collection('" + collection + "'); col.findAndModify(" + JSON.stringify(obj.query) + "," + JSON.stringify(obj.sort) + "," + JSON.stringify(obj.update) + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success','cmd':'findAndModify' };res.send(dd);});}";
+             q.query = "function(res,db){var col = db.collection('" + collection + "'); col.findAndModify(" + JSON.stringify(obj.query) + "," + JSON.stringify(obj.sort) + "," + JSON.stringify(obj.update) + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success','cmd':'findAndModify' }; db.close(); res.send(dd);});}";
          }
          return q;
 
@@ -94,10 +94,10 @@ module.exports = function () {
          var body = getBody(query);
 
          if (body.indexOf("ObjectId") !== -1) {
-             q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.update(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'update' };res.send(dd);});}";
+             q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.update(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'update' }; db.close(); res.send(dd);});}";
          }
          else {
-             q.query = "function(res,db){var col = db.collection('" + collection + "'); col.update(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success', 'cmd':'update' };res.send(dd);});}";
+             q.query = "function(res,db){var col = db.collection('" + collection + "'); col.update(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success', 'cmd':'update' }; db.close(); res.send(dd);});}";
          }
          return q;
      },
@@ -110,10 +110,10 @@ module.exports = function () {
         var body = getBody(query);
 
         if (body.indexOf("ObjectId") !== -1) {
-            q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.insert(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'create' };res.send(dd);});}";
+            q.query = "function(res,db){var col = db.collection('" + collection + "'); var ObjectId = db.bson_serializer.ObjectID; col.insert(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'create' }; db.close(); res.send(dd);});}";
         }
         else {
-            q.query = "function(res,db){var col = db.collection('" + collection + "'); col.insert(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'create' };res.send(dd);});}";
+            q.query = "function(res,db){var col = db.collection('" + collection + "'); col.insert(" + body + " ,function (err, result) {if (err) { res.send(err); } var dd = { 'data': JSON.stringify(result), 'status': 'success','cmd':'create' }; db.close(); res.send(dd);});}";
         }
 
 
@@ -132,18 +132,18 @@ module.exports = function () {
 
         if (body.indexOf("inline") !== -1) {
             if (body.indexOf("ObjectId") !== -1) {
-                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " var ObjectId = db.bson_serializer.ObjectID; col.mapReduce(" + body + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'mapReduce' };res.send(dd);});}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " var ObjectId = db.bson_serializer.ObjectID; col.mapReduce(" + body + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'mapReduce' }; db.close(); res.send(dd);});}";
             }
             else {
-                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " col.mapReduce(" + body + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'mapReduce' };res.send(dd);});}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " col.mapReduce(" + body + ",function (err, doc) {if (err) { res.send(err); } var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(doc), 'status': 'success', 'cmd':'mapReduce' }; db.close(); res.send(dd);});}";
             }
         }
         else {
             if (body.indexOf("ObjectId") !== -1) {
-                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " var ObjectId = db.bson_serializer.ObjectID; col.mapReduce(" + body + ",function (err, col) {if (err) { res.send(err); } col.find({}).toArray(function (e, col){var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(col), 'status': 'success', 'cmd':'mapReduce' };res.send(dd);})});}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " var ObjectId = db.bson_serializer.ObjectID; col.mapReduce(" + body + ",function (err, col) {if (err) { res.send(err); } col.find({}).toArray(function (e, col){var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(col), 'status': 'success', 'cmd':'mapReduce' }; db.close(); res.send(dd);})});}";
             }
             else {
-                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " col.mapReduce(" + body + ",function (err, col) {if (err) { res.send(err); } col.find({}).toArray( function (e, col){  var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(col), 'status': 'success', 'cmd':'mapReduce' };res.send(dd);})});}";
+                q.query = "function(res,db){var col = db.collection('" + collection + "');" + mprBody + " col.mapReduce(" + body + ",function (err, col) {if (err) { res.send(err); } col.find({}).toArray( function (e, col){  var dd = { 'collection': '" + collection + "', 'data': JSON.stringify(col), 'status': 'success', 'cmd':'mapReduce' }; db.close(); res.send(dd);})});}";
             }
         }
         console.log(q.query);

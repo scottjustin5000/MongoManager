@@ -1,13 +1,11 @@
-define('vm.navigation', ['jquery', 'ko', 'config.messages', 'datacontext', 'pubsub'],
- function ($, ko, message, dtx, pubsub) {
+define('vm.navigation', ['jquery', 'ko', 'config.messages', 'pubsub'],
+ function ($, ko, message, pubsub) {
 
-     var 
-     load = function () {
+     var load = function () {
          $('.nav').bind('click', function (e) {
 
              var prev = $(".selectedNav");
              var prevParent = prev.parent();
-
 
              $(prev[0]).removeClass('selectedNav');
              var curr = $('#' + e.currentTarget.id).children().first();
@@ -16,7 +14,7 @@ define('vm.navigation', ['jquery', 'ko', 'config.messages', 'datacontext', 'pubs
 
              var evtData = e.currentTarget.id === 'collection' ? '' : e.currentTarget.id;
 
-             pubsub.mediator.Publish(message.navigation.selectionChanged, evtData, null);
+             pubsub.pub(message.navigation.selectionChanged, evtData);
 
 
          });

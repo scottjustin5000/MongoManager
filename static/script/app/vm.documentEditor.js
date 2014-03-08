@@ -1,15 +1,14 @@
 define('vm.documentEditor', ['jquery', 'ko', 'config.route',
-'config.messages', 'datacontext', 'pubsub', 'collectionCache', 'base64'],
- function ($, ko, route, message, dtx, pubsub, cache, base64) {
+'config.messages', 'datacontext', 'collectionCache', 'base64'],
+ function ($, ko, route, message, dtx, cache, base64) {
 
-     var 
-     selectedValue = ko.observable('json'),
-     viewMode = 'json',
-     loaded = false,
-     currentCollection = '',
-     server = '',
-     db = '',
-     load = function () {
+     var selectedValue = ko.observable('json');
+     var viewMode = 'json';
+     var loaded = false;
+     var currentCollection = '';
+     var server = '';
+     var db = '';
+     var load = function () {
          $('.dataFormat').click(function (event) {
              viewMode = event.currentTarget.value;
              if (viewMode === 'json') {
@@ -22,7 +21,7 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
              }
          });
          $('.docButton').click(function (event) {
-             //console.log(event.currentTarget.id);
+    
              if (event.currentTarget.id == "saveDoc") {
                  save();
              }
@@ -31,8 +30,9 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
              }
 
          });
-     },
-     show = function (eobj) {
+     };
+
+     var show = function (eobj) {
          if (!loaded) {
              load();
          }
@@ -52,15 +52,17 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
          else {
              getDocumentById(id);
          }
-     },
-     getDocumentById = function (id) {
+     };
+
+     var getDocumentById = function (id) {
 
          //need to append, server, db, 
          dtx.postJson(route.queries.documentQuery, { query: query },
            function (r) {
            });
-     },
-     hydrate = function (data) {
+     };
+
+     var hydrate = function (data) {
          var props = [];
          for (var prop in data) {
              props.push({ "key": prop, "value": data[prop] });
@@ -71,15 +73,17 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
          var text = JSON.stringify(data, null, 4);
 
          jsonValue(text);
-     },
-     hide = function () {
+     };
+
+     var hide = function () {
          $('#documentEditor').hide();
          $("#splitterContainer").show();
      };
-     pr = ko.observableArray([{ "key": " ", "value": " "}]),
 
-     save = function () {
-         console.log(db);
+    var pr = ko.observableArray([{ "key": " ", "value": " "}]),
+
+     var save = function () {
+        
          var datum = { collection: currentCollection, server: server, db: db };
          if (viewMode === 'json') {
              var rawData = JSON.parse(jsonValue());
@@ -95,8 +99,9 @@ define('vm.documentEditor', ['jquery', 'ko', 'config.route',
                console.log(r);
                //update cache
            });
-     },
-     jsonValue = ko.observable("");
+     };
+
+     var jsonValue = ko.observable("");
 
      return {
          pr: pr,
